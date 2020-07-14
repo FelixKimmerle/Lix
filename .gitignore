@@ -1,0 +1,6 @@
+VSInterpreter/Debug
+VSInterpreter/Release
+.vs/
+.vscode/
+Interpreter/debug
+Interpreter/release

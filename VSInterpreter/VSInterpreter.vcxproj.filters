@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Stmt">
+      <UniqueIdentifier>{57a6d016-7a0d-4aaa-bf6a-7665bb8037a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Expr">
+      <UniqueIdentifier>{d438742d-3b7c-4ced-89e2-2f6b1a933026}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Interpreter\Chunk.cpp" />
+    <ClCompile Include="..\Interpreter\Compiler.cpp" />
+    <ClCompile Include="..\Interpreter\Converter.cpp" />
+    <ClCompile Include="..\Interpreter\LixTypenames.cpp" />
+    <ClCompile Include="..\Interpreter\main.cpp" />
+    <ClCompile Include="..\Interpreter\Parser.cpp" />
+    <ClCompile Include="..\Interpreter\Scanner.cpp" />
+    <ClCompile Include="..\Interpreter\Token.cpp" />
+    <ClCompile Include="..\Interpreter\Variable.cpp" />
+    <ClCompile Include="..\Interpreter\Vm.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\BlockStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\PrintStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\Stmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\VarStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\VisitorStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\AssignExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\BinaryExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\BooleanExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\ExplicitCastExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\Expr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\GroupingExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\LongNumberExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\NumberExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\PointNumberExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\UnaryExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\VarExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\VisitorExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\IfStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\AndExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\ComparisonExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Expr\OrExpr.cpp">
+      <Filter>Expr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\WhileStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\ForStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Interpreter\Stmt\ExprStmt.cpp">
+      <Filter>Stmt</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Interpreter\Chunk.hpp" />
+    <ClInclude Include="..\Interpreter\Compiler.hpp" />
+    <ClInclude Include="..\Interpreter\Converter.hpp" />
+    <ClInclude Include="..\Interpreter\LixTypenames.hpp" />
+    <ClInclude Include="..\Interpreter\Parser.hpp" />
+    <ClInclude Include="..\Interpreter\Scanner.hpp" />
+    <ClInclude Include="..\Interpreter\Timer.hpp" />
+    <ClInclude Include="..\Interpreter\Token.hpp" />
+    <ClInclude Include="..\Interpreter\Variable.hpp" />
+    <ClInclude Include="..\Interpreter\Vm.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\BlockStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\PrintStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\Stmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\VarStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\VisitorStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\AssignExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\BinaryExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\BooleanExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\ExplicitCastExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\Expr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\GroupingExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\LongNumberExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\NumberExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\PointNumberExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\UnaryExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\VarExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\VisitorExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\IfStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\AndExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\ComparisonExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Expr\OrExpr.hpp">
+      <Filter>Expr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\WhileStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\ForStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Interpreter\Stmt\ExprStmt.hpp">
+      <Filter>Stmt</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

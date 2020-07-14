@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Interpreter\Chunk.cpp" />
+    <ClCompile Include="..\Interpreter\Compiler.cpp" />
+    <ClCompile Include="..\Interpreter\Converter.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\AndExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\AssignExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\BinaryExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\BooleanExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\ComparisonExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\ExplicitCastExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\Expr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\GroupingExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\LongNumberExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\NumberExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\OrExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\PointNumberExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\UnaryExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\VarExpr.cpp" />
+    <ClCompile Include="..\Interpreter\Expr\VisitorExpr.cpp" />
+    <ClCompile Include="..\Interpreter\LixTypenames.cpp" />
+    <ClCompile Include="..\Interpreter\main.cpp" />
+    <ClCompile Include="..\Interpreter\Parser.cpp" />
+    <ClCompile Include="..\Interpreter\Scanner.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\BlockStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\ExprStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\ForStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\IfStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\PrintStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\Stmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\VarStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\VisitorStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Stmt\WhileStmt.cpp" />
+    <ClCompile Include="..\Interpreter\Token.cpp" />
+    <ClCompile Include="..\Interpreter\Variable.cpp" />
+    <ClCompile Include="..\Interpreter\Vm.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Interpreter\Chunk.hpp" />
+    <ClInclude Include="..\Interpreter\Compiler.hpp" />
+    <ClInclude Include="..\Interpreter\Converter.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\AndExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\AssignExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\BinaryExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\BooleanExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\ComparisonExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\ExplicitCastExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\Expr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\GroupingExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\LongNumberExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\NumberExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\OrExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\PointNumberExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\UnaryExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\VarExpr.hpp" />
+    <ClInclude Include="..\Interpreter\Expr\VisitorExpr.hpp" />
+    <ClInclude Include="..\Interpreter\LixTypenames.hpp" />
+    <ClInclude Include="..\Interpreter\Parser.hpp" />
+    <ClInclude Include="..\Interpreter\Scanner.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\BlockStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\ExprStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\ForStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\IfStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\PrintStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\Stmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\VarStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\VisitorStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Stmt\WhileStmt.hpp" />
+    <ClInclude Include="..\Interpreter\Timer.hpp" />
+    <ClInclude Include="..\Interpreter\Token.hpp" />
+    <ClInclude Include="..\Interpreter\Variable.hpp" />
+    <ClInclude Include="..\Interpreter\Vm.hpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{6522BAC3-DDCF-4AD3-BF4D-7D1EA70D2194}</ProjectGuid>
+    <RootNamespace>VSInterpreter</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>E:\Documents\Development\CPP\Lix\Interpreter;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;DEBUG_TRACE_EXECUTION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

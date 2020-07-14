@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Documents\Development\CPP\Lix\Interpreter\Expr\</FILEPATH>
+      <FILENAME>Expr.cpp</FILENAME>
+      <LINE>3</LINE>
+      <COLUMN>6</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'Expr::m_Type' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>Expr::{ctor}</FUNCTION>
+    <DECORATED>??0Expr@@QAE@XZ</DECORATED>
+    <FUNCLINE>3</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>Expr::m_Type</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

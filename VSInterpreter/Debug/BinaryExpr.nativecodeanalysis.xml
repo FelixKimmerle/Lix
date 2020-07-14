@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>E:\Documents\Development\CPP\Lix\Interpreter\Expr\</FILEPATH>
+      <FILENAME>BinaryExpr.cpp</FILENAME>
+      <LINE>4</LINE>
+      <COLUMN>12</COLUMN>
+    </SFA>
+    <DEFECTCODE>26812</DEFECTCODE>
+    <DESCRIPTION>The enum type 'BinaryExpr::BinaryOperator' is unscoped. Prefer 'enum class' over 'enum' (Enum.3).</DESCRIPTION>
+    <FUNCTION>BinaryExpr::{ctor}</FUNCTION>
+    <DECORATED>??0BinaryExpr@@QAE@PAVExpr@@0W4BinaryOperator@0@@Z</DECORATED>
+    <FUNCLINE>4</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

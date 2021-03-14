@@ -1,81 +1,66 @@
-#
-# Compiler flags
-#
-CC     	= g++ -I./
-CFLAGS 	= -Wall -std=c++17
-LIBS	= -L/usr/lib -lstdc++#-lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lpthread
-#
-# Project files
-#
+TARGET_EXEC ?= Lix
 
-rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+BUILD_DIR ?= ./build
+SRC_DIRS ?= src/
+CC = g++
 
-FOLDERS = Expr Stmt VM
+SRCS := $(shell find $(SRC_DIRS) -name *.cpp)
+#OBJS := $(SRCS:%=%.o)
+#DEPS := $(OBJS:.o=.d)
 
-SRCS = $(call rwildcard, , *.cpp)
-DEPS = $(call rwildcard, , *.d)
--include $(DEPS)
-OBJS = $(SRCS:.cpp=.o)
-EXE  = LixInterpreter
+DEPS = $(shell find build/ -name *.d)
+
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+
+CPPFLAGS ?= $(INC_FLAGS) -MMD -MD -MP #-Wall -Wextra -Wfloat-equal -Wundef -Wunreachable-code -Wcast-qual
 
 #
 # Debug build settings
 #
-DBGDIR = debug
-DBGEXE = $(DBGDIR)/$(EXE)
-DBGOBJS = $(addprefix $(DBGDIR)/, $(OBJS))
-DBGCFLAGS = -g -O0 -ftrapv -Wall -Wextra -Wfloat-equal -Wundef -Wunreachable-code -Wcast-qual -DDEBUG -DDEBUG_PRINT_CODE -DDEBUG_TRACE_EXECUTION
+DBGDIR := $(BUILD_DIR)/debug
+DBGEXE := $(DBGDIR)/$(TARGET_EXEC)
+DBGOBJS := $(SRCS:%=$(DBGDIR)/%.o)
+DBGCFLAGS := $(CPPFLAGS) -g -O0 -ftrapv -DDEBUG
 
 #
 # Release build settings
 #
-RELDIR = release
-RELEXE = $(RELDIR)/$(EXE)
-RELOBJS = $(addprefix $(RELDIR)/, $(OBJS))
-RELCFLAGS = -O3 -Ofast -DNDEBUG -Wall -Wextra -Wfloat-equal -Wundef -Wunreachable-code -Wcast-qual
+RELDIR := $(BUILD_DIR)/release
+RELEXE := $(RELDIR)/$(TARGET_EXEC)
+RELOBJS := $(SRCS:%=$(RELDIR)/%.o)
+RELCFLAGS := $(CPPFLAGS) -O3 -Ofast -DRELEASE -DNDEBUG
 
-.PHONY: all clean debug prep release remake run rund test
+.PHONY: clean release debug run rund all remake
 
-# Default build
-all: prep release
-remake: clean release
+all: release debug
+remake: clean all
 
-#
-# Debug rules
-#
-debug: $(DBGEXE)
-
-$(DBGEXE): $(DBGOBJS)
-	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $(DBGEXE) $^ $(LIBS)
-
-$(DBGDIR)/%.o: %.cpp
-	$(CC) -c $(CFLAGS) $(DBGCFLAGS) -MMD -o $@ $<
-
-#
-# Release rules
-#
 release: $(RELEXE)
 
 $(RELEXE): $(RELOBJS)
-	$(CC) $(CFLAGS) $(RELCFLAGS) -o $(RELEXE) $^ $(LIBS)
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(RELOBJS) -o $@ $(LDFLAGS)
 
-$(RELDIR)/%.o: %.cpp
-	$(CC) -c $(CFLAGS) $(RELCFLAGS) -MMD -o $@ $<
+$(RELDIR)/%.cpp.o: %.cpp
+	$(MKDIR_P) $(dir $@)
+	$(CXX) $(RELCFLAGS) -c $< -o $@
 
-#
-# Other rules
-#
-prep:
-	@mkdir -p $(DBGDIR) $(RELDIR)
-ifneq ($(FOLDERS),)
-	@cd $(DBGDIR) && mkdir -p $(FOLDERS)
-	@cd $(RELDIR) && mkdir -p $(FOLDERS)
-endif
 
-remake: clean all
+debug: $(DBGEXE)
+
+$(DBGEXE): $(DBGOBJS)
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(DBGOBJS) -o $@ $(LDFLAGS)
+
+$(DBGDIR)/%.cpp.o: %.cpp
+	$(MKDIR_P) $(dir $@)
+	$(CXX) $(DBGCFLAGS) -c $< -o $@
+
 
 clean:
-	rm -f $(RELEXE) $(RELOBJS) $(DBGEXE) $(DBGOBJS) $(RELDIR)/*.o $(DBGDIR)/*.o $(RELDIR)/*.d $(DBGDIR)/*.d $(DEPS)
+	$(RM) -r $(BUILD_DIR)
+
 run:
 	$(RELEXE)
 
@@ -84,3 +69,7 @@ rund:
 
 test:
 	valgrind --undef-value-errors=no -v $(DBGEXE)
+
+-include $(DEPS)
+
+MKDIR_P ?= mkdir -p

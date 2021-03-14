@@ -1,6 +1,16 @@
+int x = 999;
+int y = 888;
+
 int add(int a, int b)
 {
-    print a+b;
+    return a+b;
 }
 
-add(8,9);
+int mul(int a, int b)
+{
+    return a*b;
+}
+
+print add(8,9);
+print mul(5,2);
+return 555;

@@ -1,5 +1,5 @@
-VSInterpreter/Debug
-VSInterpreter/Release
+VSInterpreter/Debug/
+VSInterpreter/Release/
 .vs/
 .vscode/
-Interpreter/build
+Interpreter/build/

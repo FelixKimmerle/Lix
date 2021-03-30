@@ -1,27 +1,28 @@
 #include "ComparisonExpr.hpp"
 #include "VisitorExpr.hpp"
 
-ComparisonExpr::ComparisonExpr(ExprPtr p_pLeft, ExprPtr p_pRight, ComparisonExpr::ComparisonOperator p_BinaryOperator, unsigned int p_uiLine) : m_pLeft(std::move(p_pLeft)),
-                                                                                                                                                m_pRight(std::move(p_pRight)),
-                                                                                                                                                m_BinaryOperator(p_BinaryOperator),
-                                                                                                                                                Expr(p_uiLine)
+ComparisonExpr::ComparisonExpr(ExprPtr p_pLeft, ExprPtr p_pRight, ComparisonExpr::ComparisonOperator p_BinaryOperator, TokenPosition position) : Expr(position),
+                                                                                                                                                 left(std::move(p_pLeft)),
+                                                                                                                                                 right(std::move(p_pRight)),
+                                                                                                                                                 binary_operator(p_BinaryOperator)
+
 {
 }
 
-void ComparisonExpr::visit(VisitorExpr *p_pVisitor)
+void ComparisonExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitComparison(this);
+    visitor->visitComparison(this);
 }
 
-Expr *ComparisonExpr::getLeft()
+Expr *ComparisonExpr::get_left()
 {
-    return m_pLeft.get();
+    return left.get();
 }
-Expr *ComparisonExpr::getRight()
+Expr *ComparisonExpr::get_right()
 {
-    return m_pRight.get();
+    return right.get();
 }
-ComparisonExpr::ComparisonOperator ComparisonExpr::getOperator()
+ComparisonExpr::ComparisonOperator ComparisonExpr::get_binary_operator()
 {
-    return m_BinaryOperator;
+    return binary_operator;
 }

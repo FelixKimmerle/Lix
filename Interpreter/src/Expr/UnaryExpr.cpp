@@ -1,22 +1,23 @@
 #include "UnaryExpr.hpp"
 #include "VisitorExpr.hpp"
-UnaryExpr::UnaryExpr(ExprPtr p_pExpr, UnaryOperator p_UnaryOperator, unsigned int p_uiLine) : m_pExpr(std::move(p_pExpr)),
-                                                                                              m_UnaryOperator(p_UnaryOperator),
-                                                                                              Expr(p_uiLine)
+UnaryExpr::UnaryExpr(ExprPtr expr, UnaryOperator unary_operator, TokenPosition position) : Expr(position),
+                                                                                               expr(std::move(expr)),
+                                                                                               unary_operator(unary_operator)
+
 {
 }
 
-void UnaryExpr::visit(VisitorExpr *p_pVisitor)
+void UnaryExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitUnary(this);
+    visitor->visitUnary(this);
 }
 
-Expr *UnaryExpr::getExpr()
+Expr *UnaryExpr::get_expr()
 {
-    return m_pExpr.get();
+    return expr.get();
 }
 
-UnaryExpr::UnaryOperator UnaryExpr::getOperator()
+UnaryExpr::UnaryOperator UnaryExpr::get_unary_operator()
 {
-    return m_UnaryOperator;
+    return unary_operator;
 }

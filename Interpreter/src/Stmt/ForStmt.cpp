@@ -1,35 +1,35 @@
 #include "ForStmt.hpp"
 #include "VisitorStmt.hpp"
 
-ForStmt::ForStmt(ExprPtr p_pCondition, StmtPtr p_pBody, StmtPtr p_pInitializer, ExprPtr p_pIncrement, unsigned int p_uiLine) : Stmt(p_uiLine),
-																															   m_pBody(std::move(p_pBody)),
-																															   m_pCondition(std::move(p_pCondition)),
-																															   m_pInitializer(std::move(p_pInitializer)),
-																															   m_pIncrement(std::move(p_pIncrement))
+ForStmt::ForStmt(ExprPtr condition, StmtPtr body, StmtPtr initializer, ExprPtr increment, TokenPosition position) : Stmt(position),
+																															   body(std::move(body)),
+																															   condition(std::move(condition)),
+																															   initializer(std::move(initializer)),
+																															   increment(std::move(increment))
 {
 }
 
-Expr *ForStmt::getCondition()
+Expr *ForStmt::get_condition()
 {
-	return m_pCondition.get();
+	return condition.get();
 }
 
-Stmt *ForStmt::getBody()
+Stmt *ForStmt::get_body()
 {
-	return m_pBody.get();
+	return body.get();
 }
 
-Stmt *ForStmt::getInitializer()
+Stmt *ForStmt::get_initializer()
 {
-	return m_pInitializer.get();
+	return initializer.get();
 }
 
-Expr *ForStmt::getIncrement()
+Expr *ForStmt::get_increment()
 {
-	return m_pIncrement.get();
+	return increment.get();
 }
 
-void ForStmt::visit(VisitorStmt *p_pVisitor)
+void ForStmt::visit(VisitorStmt *visitor)
 {
-	p_pVisitor->visitFor(this);
+	visitor->visitFor(this);
 }

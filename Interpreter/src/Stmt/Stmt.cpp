@@ -1,10 +1,10 @@
 #include "Stmt.hpp"
 
-Stmt::Stmt(unsigned int p_uiLine) : m_uiLine(p_uiLine)
+Stmt::Stmt(TokenPosition position) : position(position)
 {
 }
 
-unsigned int Stmt::getLine()
+TokenPosition Stmt::get_position()
 {
-    return m_uiLine;
+    return position;
 }

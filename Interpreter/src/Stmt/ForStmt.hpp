@@ -5,16 +5,16 @@
 class ForStmt : public Stmt
 {
 private:
-	ExprPtr m_pCondition;
-	StmtPtr m_pBody;
-	StmtPtr m_pInitializer;
-	ExprPtr m_pIncrement;
+	ExprPtr condition;
+	StmtPtr body;
+	StmtPtr initializer;
+	ExprPtr increment;
 
 public:
-	ForStmt(ExprPtr p_pCondition, StmtPtr p_pBody, StmtPtr p_pInitializer, ExprPtr p_pIncrement, unsigned int p_uiLine);
-	Expr* getCondition();
-	Stmt* getBody();
-	Stmt* getInitializer();
-	Expr* getIncrement();
-	void visit(VisitorStmt *p_pVisitor);
+	ForStmt(ExprPtr condition, StmtPtr body, StmtPtr initializer, ExprPtr increment, TokenPosition position);
+	Expr* get_condition();
+	Stmt* get_body();
+	Stmt* get_initializer();
+	Expr* get_increment();
+	void visit(VisitorStmt *visitor);
 };

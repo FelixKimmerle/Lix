@@ -3,33 +3,29 @@
 #include <iomanip>
 std::ostream &operator<<(std::ostream &out, const Token &value)
 {
-    out << std::setfill(' ') << std::setw(2) << (int)value.m_TokenType << " \'" << value.m_sLexeme << "\'";
+    out << std::setfill(' ') << std::setw(2) << (int)value.token_type << " \'" << value.lexeme << "\'";
     return out;
 }
 
-Token::Token(TokenType p_TokenType, unsigned int p_uiLine, std::string p_sLexeme) : m_sLexeme(p_sLexeme), m_uiLine(p_uiLine), m_TokenType(p_TokenType)
+Token::Token(TokenType token_type, TokenPosition position, std::string lexeme) : lexeme(lexeme), position(position), token_type(token_type)
 {
 }
 
-Token::Token() : m_TokenType(TokenType::TOKEN_ERROR)
+Token::Token() : token_type(TokenType::TOKEN_ERROR)
 {
 }
 
-Token::~Token()
+Token::TokenType Token::get_type()
 {
+    return token_type;
 }
 
-Token::TokenType Token::getType()
+TokenPosition Token::get_position()
 {
-    return m_TokenType;
+    return position;
 }
 
-unsigned int Token::getLine()
+std::string Token::get_lexeme()
 {
-    return m_uiLine;
-}
-
-std::string Token::getLexeme()
-{
-    return m_sLexeme;
+    return lexeme;
 }

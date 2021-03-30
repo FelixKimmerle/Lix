@@ -1,23 +1,24 @@
 #include "WhileStmt.hpp"
 #include "VisitorStmt.hpp"
 
-WhileStmt::WhileStmt(ExprPtr p_pCondition, StmtPtr p_pBody, unsigned int p_uiLine) : m_pCondition(std::move(p_pCondition)),
-																					 m_pBody(std::move(p_pBody)),
-																					 Stmt(p_uiLine)
+WhileStmt::WhileStmt(ExprPtr condition, StmtPtr body, TokenPosition position) : Stmt(position),
+																				condition(std::move(condition)),
+																				body(std::move(body))
+
 {
 }
 
-Expr *WhileStmt::getCondition()
+Expr *WhileStmt::get_condition()
 {
-	return m_pCondition.get();
+	return condition.get();
 }
 
-Stmt *WhileStmt::getBody()
+Stmt *WhileStmt::get_body()
 {
-	return m_pBody.get();
+	return body.get();
 }
 
-void WhileStmt::visit(VisitorStmt *p_pVisitor)
+void WhileStmt::visit(VisitorStmt *visitor)
 {
-	p_pVisitor->visitWhile(this);
+	visitor->visitWhile(this);
 }

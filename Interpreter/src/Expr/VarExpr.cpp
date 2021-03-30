@@ -1,15 +1,16 @@
 #include "VarExpr.hpp"
 #include "VisitorExpr.hpp"
-VarExpr::VarExpr(std::string p_sName, unsigned int p_uiLine) : m_sName(p_sName), Expr(p_uiLine)
+VarExpr::VarExpr(std::string name, TokenPosition position) : Expr(position),
+                                                             name(name)
 {
 }
 
-void VarExpr::visit(VisitorExpr *p_pVisitor)
+void VarExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitVar(this);
+    visitor->visitVar(this);
 }
 
-std::string VarExpr::getName()
+std::string VarExpr::get_name()
 {
-    return m_sName;
+    return name;
 }

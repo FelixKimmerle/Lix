@@ -2,21 +2,21 @@
 #include "VisitorExpr.hpp"
 
 template <class T>
-NumberExpr<T>::NumberExpr(T p_Number, unsigned int p_uiLine) : Expr(p_uiLine)
+NumberExpr<T>::NumberExpr(T number, TokenPosition position) : Expr(position),
+                                                              number(number)
 {
-    m_Number = p_Number;
 }
 
 template <class T>
-void NumberExpr<T>::visit(VisitorExpr *p_pVisitor)
+void NumberExpr<T>::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitNumber(this);
+    visitor->visitNumber(this);
 }
 
 template <class T>
-T NumberExpr<T>::getNumber()
+T NumberExpr<T>::get_number()
 {
-    return m_Number;
+    return number;
 }
 
 template class NumberExpr<Lix_Byte>;

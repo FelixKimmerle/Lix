@@ -1,32 +1,37 @@
 #pragma once
+
+#include "Token.hpp"
+
 #include <string>
 #include <vector>
-#include "Token.hpp"
+
 class Scanner
 {
 private:
-    bool isAtEnd();
+    bool is_at_end();
     char advance();
-    bool match(char p_cExpected);
-    void skipWhitespace();
+    bool match(char expected);
+    void skip_whitespace();
     char peek();
-    char peekNext();
+    char peek_next();
     Token string();
-    bool isDigit(char p_cCharacter);
+    bool is_digit(char character);
     Token number();
-    bool isAlpha(char p_cCharacter);
+    bool is_alpha(char character);
     Token identifier();
-    Token::TokenType identifierType();
-    Token makeToken(Token::TokenType p_Type);
-    Token::TokenType checkKeyword(unsigned int p_uiStart, unsigned int p_uiLength, const std::string &p_sRest, Token::TokenType p_Type);
+    Token::TokenType identifier_type();
+    Token make_token(Token::TokenType type);
+    Token::TokenType check_keyword(unsigned int start, unsigned int length, const std::string &rest, Token::TokenType type);
 
-    const std::string m_sSrc;
-    unsigned int m_uiLine;
-    unsigned int m_uiCurrent;
-    unsigned int m_uiStart;
+    std::string src;
+    const std::string file_name;
+    unsigned int line;
+    unsigned int column;
+    unsigned int current;
+    unsigned int start;
 
 public:
-    Scanner(std::string p_sSrc);
-    ~Scanner();
+    Scanner(const std::string &file_name, const std::string &src);
+    Scanner(const std::string &file_name);
     Token scanToken();
 };

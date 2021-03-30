@@ -6,10 +6,10 @@ class VarExpr : public Expr
 {
 
 private:
-    std::string m_sName;
+    std::string name;
     
 public:
-    VarExpr(std::string p_sName, unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    std::string getName();
+    VarExpr(std::string name, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    std::string get_name();
 };

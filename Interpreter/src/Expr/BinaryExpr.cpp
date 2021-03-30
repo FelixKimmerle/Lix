@@ -1,27 +1,28 @@
 #include "BinaryExpr.hpp"
 #include "VisitorExpr.hpp"
 
-BinaryExpr::BinaryExpr(ExprPtr p_pLeft, ExprPtr p_pRight, BinaryExpr::BinaryOperator p_BinaryOperator, unsigned int p_uiLine) : m_pLeft(std::move(p_pLeft)),
-                                                                                                                                m_pRight(std::move(p_pRight)),
-                                                                                                                                m_BinaryOperator(p_BinaryOperator),
-                                                                                                                                Expr(p_uiLine)
+BinaryExpr::BinaryExpr(ExprPtr left, ExprPtr right, BinaryExpr::BinaryOperator binary_operator, TokenPosition position) : Expr(position),
+                                                                                                                          left(std::move(left)),
+                                                                                                                          right(std::move(right)),
+                                                                                                                          binary_operator(binary_operator)
+
 {
 }
 
-void BinaryExpr::visit(VisitorExpr *p_pVisitor)
+void BinaryExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitBinary(this);
+    visitor->visitBinary(this);
 }
 
-Expr *BinaryExpr::getLeft()
+Expr *BinaryExpr::get_left()
 {
-    return m_pLeft.get();
+    return left.get();
 }
-Expr *BinaryExpr::getRight()
+Expr *BinaryExpr::get_right()
 {
-    return m_pRight.get();
+    return right.get();
 }
-BinaryExpr::BinaryOperator BinaryExpr::getOperator()
+BinaryExpr::BinaryOperator BinaryExpr::get_binary_operator()
 {
-    return m_BinaryOperator;
+    return binary_operator;
 }

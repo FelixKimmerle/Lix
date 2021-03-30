@@ -1,10 +1,10 @@
 #include "Expr.hpp"
 
-Expr::Expr(unsigned int p_uiLine) : m_uiLine(p_uiLine)
+Expr::Expr(TokenPosition position) : position(position)
 {
 }
 
-unsigned int Expr::getLine()
+TokenPosition Expr::get_position()
 {
-    return m_uiLine;
+    return position;
 }

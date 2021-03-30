@@ -1,24 +1,24 @@
 #include "Stmt/BlockStmt.hpp"
 #include "Stmt/VisitorStmt.hpp"
-BlockStmt::BlockStmt(unsigned int p_uiLine) : Stmt(p_uiLine)
+BlockStmt::BlockStmt(TokenPosition position) : Stmt(position)
 {
 }
 
-void BlockStmt::visit(VisitorStmt *p_pVisitor)
+void BlockStmt::visit(VisitorStmt *visitor)
 {
-    p_pVisitor->visitBlock(this);
+    visitor->visitBlock(this);
 }
 
-std::vector<StmtPtr>::iterator BlockStmt::begin()
+std::vector<StmtPtr>::const_iterator BlockStmt::begin()const
 {
-    return m_vStmts.begin();
+    return stmts.cbegin();
 }
-std::vector<StmtPtr>::iterator BlockStmt::end()
+std::vector<StmtPtr>::const_iterator BlockStmt::end()const
 {
-    return m_vStmts.end();
+    return stmts.cend();
 }
 
 void BlockStmt::add(StmtPtr stmt)
 {
-    m_vStmts.push_back(std::move(stmt));
+    stmts.push_back(std::move(stmt));
 }

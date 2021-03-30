@@ -1,17 +1,18 @@
 #include "GroupingExpr.hpp"
 #include "VisitorExpr.hpp"
 
-GroupingExpr::GroupingExpr(ExprPtr p_pExpr, unsigned int p_uiLine) : m_pExpr(std::move(p_pExpr)),
-                                                                     Expr(p_uiLine)
+GroupingExpr::GroupingExpr(ExprPtr p_pExpr, TokenPosition position) : Expr(position),
+                                                                      expr(std::move(p_pExpr))
+
 {
 }
 
-void GroupingExpr::visit(VisitorExpr *p_pVisitor)
+void GroupingExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitGrouping(this);
+    visitor->visitGrouping(this);
 }
 
-Expr *GroupingExpr::getExpr()
+Expr *GroupingExpr::get_expr()
 {
-    return m_pExpr.get();
+    return expr.get();
 }

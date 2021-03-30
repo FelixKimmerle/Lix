@@ -2,63 +2,75 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <fstream>
 
-Scanner::Scanner(std::string p_sSrc) : m_sSrc(p_sSrc), m_uiLine(1), m_uiCurrent(0), m_uiStart(0)
+Scanner::Scanner(const std::string &file_name, const std::string &src) : src(src), file_name(file_name), line(1), column(0), current(0), start(0)
 {
 }
 
-Scanner::~Scanner()
+Scanner::Scanner(const std::string &file_name) : file_name(file_name), line(1), column(0), current(0), start(0)
 {
+    std::ifstream file_stream(file_name);
+
+    file_stream.seekg(0, std::ios::end);
+    src.reserve(file_stream.tellg());
+    file_stream.seekg(0, std::ios::beg);
+
+    src.assign((std::istreambuf_iterator<char>(file_stream)),
+               std::istreambuf_iterator<char>());
 }
 
-bool Scanner::isAtEnd()
+bool Scanner::is_at_end()
 {
-    return m_uiCurrent >= m_sSrc.size();
+    return current >= src.size();
 }
 
 char Scanner::advance()
 {
-    return m_sSrc[m_uiCurrent++];
+    column++;
+    return src[current++];
 }
 
-Token Scanner::makeToken(Token::TokenType p_Type)
+Token Scanner::make_token(Token::TokenType type)
 {
-    if (p_Type == Token::TokenType::TOKEN_STRING)
+    TokenPosition position(file_name, line, column);
+    if (type == Token::TokenType::TOKEN_STRING)
     {
-        return Token(p_Type, m_uiLine, m_sSrc.substr(m_uiStart + 1, m_uiCurrent - m_uiStart - 2));
+        return Token(type, position, src.substr(start + 1, current - start - 2));
     }
-    return Token(p_Type, m_uiLine, m_sSrc.substr(m_uiStart, m_uiCurrent - m_uiStart));
+    return Token(type, position, src.substr(start, current - start));
 }
 
-bool Scanner::match(char p_cExpected)
+bool Scanner::match(char expected)
 {
-    if (isAtEnd())
+    if (is_at_end())
     {
         return false;
     }
-    if (m_sSrc[m_uiCurrent] != p_cExpected)
+    if (src[current] != expected)
     {
         return false;
     }
-    m_uiCurrent++;
+    current++;
+    column++;
     return true;
 }
 
 char Scanner::peek()
 {
-    return m_sSrc[m_uiCurrent];
+    return src[current];
 }
 
-char Scanner::peekNext()
+char Scanner::peek_next()
 {
-    if (isAtEnd())
+    if (is_at_end())
     {
         return '\0';
     }
-    return m_sSrc[m_uiCurrent + 1];
+    return src[current + 1];
 }
 
-void Scanner::skipWhitespace()
+void Scanner::skip_whitespace()
 {
     for (;;)
     {
@@ -71,14 +83,15 @@ void Scanner::skipWhitespace()
             advance();
             break;
         case '\n':
-            m_uiLine++;
+            line++;
+            column = 0;
             advance();
             break;
         case '/':
-            if (peekNext() == '/')
+            if (peek_next() == '/')
             {
                 // A comment goes until the end of the line.
-                while (peek() != '\n' && !isAtEnd())
+                while (peek() != '\n' && !is_at_end())
                 {
                     advance();
                 }
@@ -96,43 +109,43 @@ void Scanner::skipWhitespace()
 
 Token Scanner::string()
 {
-    while (peek() != '"' && !isAtEnd())
+    while (peek() != '"' && !is_at_end())
     {
         if (peek() == '\n')
         {
-            m_uiLine++;
+            line++;
         }
         advance();
     }
 
-    if (isAtEnd())
+    if (is_at_end())
     {
-        return Token(Token::TokenType::TOKEN_ERROR, m_uiLine, "Unterminated string.");
+        return Token(Token::TokenType::TOKEN_ERROR, TokenPosition(file_name, line, column), "Unterminated string.");
     }
 
     // The closing ".
     advance();
-    return makeToken(Token::TokenType::TOKEN_STRING);
+    return make_token(Token::TokenType::TOKEN_STRING);
 }
 
-bool Scanner::isDigit(char p_cCharacter)
+bool Scanner::is_digit(char character)
 {
-    return p_cCharacter >= '0' && p_cCharacter <= '9';
+    return character >= '0' && character <= '9';
 }
 Token Scanner::number()
 {
-    bool pointnumber = false;
-    while (isDigit(peek()))
+    bool decimal = false;
+    while (is_digit(peek()))
     {
         advance();
     }
 
-    if (peek() == '.' && isDigit(peekNext()))
+    if (peek() == '.' && is_digit(peek_next()))
     {
-        pointnumber = true;
+        decimal = true;
         advance();
 
-        while (isDigit(peek()))
+        while (is_digit(peek()))
         {
             advance();
         }
@@ -142,226 +155,225 @@ Token Scanner::number()
     {
     case 'b':
         advance();
-        return makeToken(Token::TokenType::TOKEN_NUMBER_BYTE);
+        return make_token(Token::TokenType::TOKEN_NUMBER_BYTE);
         break;
     case 's':
         advance();
-        return makeToken(Token::TokenType::TOKEN_NUMBER_SHORT);
+        return make_token(Token::TokenType::TOKEN_NUMBER_SHORT);
         break;
     case 'i':
         advance();
-        return makeToken(Token::TokenType::TOKEN_NUMBER_INT);
+        return make_token(Token::TokenType::TOKEN_NUMBER_INT);
         break;
     case 'f':
         advance();
-        return makeToken(Token::TokenType::TOKEN_NUMBER_FLOAT);
+        return make_token(Token::TokenType::TOKEN_NUMBER_FLOAT);
         break;
     case 'd':
         advance();
-        return makeToken(Token::TokenType::TOKEN_NUMBER_DOUBLE);
+        return make_token(Token::TokenType::TOKEN_NUMBER_DOUBLE);
         break;
     case 'l':
         advance();
-        return makeToken(Token::TokenType::TOKEN_NUMBER_LONG);
+        return make_token(Token::TokenType::TOKEN_NUMBER_LONG);
         break;
 
     default:
-        if (pointnumber)
+        if (decimal)
         {
-            return makeToken(Token::TokenType::TOKEN_NUMBER_FLOAT);
+            return make_token(Token::TokenType::TOKEN_NUMBER_FLOAT);
         }
         else
         {
-            return makeToken(Token::TokenType::TOKEN_NUMBER_INT);
+            return make_token(Token::TokenType::TOKEN_NUMBER_INT);
         }
         break;
     }
 }
 
-bool Scanner::isAlpha(char p_cCharacter)
+bool Scanner::is_alpha(char character)
 {
-    return (p_cCharacter >= 'a' && p_cCharacter <= 'z') ||
-           (p_cCharacter >= 'A' && p_cCharacter <= 'Z') ||
-           p_cCharacter == '_';
+    return (character >= 'a' && character <= 'z') ||
+           (character >= 'A' && character <= 'Z') ||
+           character == '_';
 }
 Token Scanner::identifier()
 {
-    while (isAlpha(peek()) || isDigit(peek()))
+    while (is_alpha(peek()) || is_digit(peek()))
     {
         advance();
     }
 
-    return makeToken(identifierType());
+    return make_token(identifier_type());
 }
 
-Token::TokenType Scanner::identifierType()
+Token::TokenType Scanner::identifier_type()
 {
-    switch (m_sSrc[m_uiStart])
+    switch (src[start])
     {
     case 'a':
-        return checkKeyword(1, 2, "nd", Token::TokenType::TOKEN_AND);
+        return check_keyword(1, 2, "nd", Token::TokenType::TOKEN_AND);
     case 'b':
-        if (m_uiCurrent - m_uiStart > 1)
+        if (current - start > 1)
         {
-            switch (m_sSrc[m_uiStart + 1])
+            switch (src[start + 1])
             {
             case 'o':
-                return checkKeyword(2, 2, "ol", Token::TokenType::TOKEN_BOOL);
+                return check_keyword(2, 2, "ol", Token::TokenType::TOKEN_BOOL);
             case 'y':
-                return checkKeyword(2, 2, "te", Token::TokenType::TOKEN_BYTE);
+                return check_keyword(2, 2, "te", Token::TokenType::TOKEN_BYTE);
             case 'r':
-                return checkKeyword(2, 3, "eak", Token::TokenType::TOKEN_BREAK);
+                return check_keyword(2, 3, "eak", Token::TokenType::TOKEN_BREAK);
             }
         }
         break;
     case 'c':
-        if (m_uiCurrent - m_uiStart > 1)
+        if (current - start > 1)
         {
-            switch (m_sSrc[m_uiStart + 1])
+            switch (src[start + 1])
             {
             case 'l':
-                return checkKeyword(1, 3, "ass", Token::TokenType::TOKEN_CLASS);
+                return check_keyword(1, 3, "ass", Token::TokenType::TOKEN_CLASS);
             case 'o':
-                return checkKeyword(2, 6, "ntinue", Token::TokenType::TOKEN_CONTINUE);
+                return check_keyword(2, 6, "ntinue", Token::TokenType::TOKEN_CONTINUE);
             }
         }
         break;
     case 'd':
-        return checkKeyword(1, 5, "ouble", Token::TokenType::TOKEN_DOUBLE);
+        return check_keyword(1, 5, "ouble", Token::TokenType::TOKEN_DOUBLE);
     case 'e':
-        return checkKeyword(1, 3, "lse", Token::TokenType::TOKEN_ELSE);
+        return check_keyword(1, 3, "lse", Token::TokenType::TOKEN_ELSE);
     case 'f':
-        if (m_uiCurrent - m_uiStart > 1)
+        if (current - start > 1)
         {
-            switch (m_sSrc[m_uiStart + 1])
+            switch (src[start + 1])
             {
             case 'a':
-                return checkKeyword(2, 3, "lse", Token::TokenType::TOKEN_FALSE);
+                return check_keyword(2, 3, "lse", Token::TokenType::TOKEN_FALSE);
             case 'o':
-                return checkKeyword(2, 1, "r", Token::TokenType::TOKEN_FOR);
+                return check_keyword(2, 1, "r", Token::TokenType::TOKEN_FOR);
             case 'u':
-                return checkKeyword(2, 1, "n", Token::TokenType::TOKEN_FUN);
+                return check_keyword(2, 1, "n", Token::TokenType::TOKEN_FUN);
             case 'l':
-                return checkKeyword(2, 3, "oat", Token::TokenType::TOKEN_FLOAT);
+                return check_keyword(2, 3, "oat", Token::TokenType::TOKEN_FLOAT);
             }
         }
         break;
     case 'i':
-        if (m_uiCurrent - m_uiStart > 1)
+        if (current - start > 1)
         {
-            switch (m_sSrc[m_uiStart + 1])
+            switch (src[start + 1])
             {
             case 'f':
-                return checkKeyword(2, 0, "", Token::TokenType::TOKEN_IF);
+                return check_keyword(2, 0, "", Token::TokenType::TOKEN_IF);
             case 'n':
-                return checkKeyword(2, 1, "t", Token::TokenType::TOKEN_INT);
+                return check_keyword(2, 1, "t", Token::TokenType::TOKEN_INT);
             }
         }
         break;
     case 'l':
-        return checkKeyword(1, 3, "ong", Token::TokenType::TOKEN_LONG);
+        return check_keyword(1, 3, "ong", Token::TokenType::TOKEN_LONG);
     case 'n':
-        return checkKeyword(1, 2, "il", Token::TokenType::TOKEN_NIL);
+        return check_keyword(1, 2, "il", Token::TokenType::TOKEN_NIL);
     case 'o':
-        return checkKeyword(1, 1, "r", Token::TokenType::TOKEN_OR);
+        return check_keyword(1, 1, "r", Token::TokenType::TOKEN_OR);
     case 'p':
-        return checkKeyword(1, 4, "rint", Token::TokenType::TOKEN_PRINT);
+        return check_keyword(1, 4, "rint", Token::TokenType::TOKEN_PRINT);
     case 'r':
-        return checkKeyword(1, 5, "eturn", Token::TokenType::TOKEN_RETURN);
+        return check_keyword(1, 5, "eturn", Token::TokenType::TOKEN_RETURN);
     case 's':
-        if (m_uiCurrent - m_uiStart > 1)
+        if (current - start > 1)
         {
-            switch (m_sSrc[m_uiStart + 1])
+            switch (src[start + 1])
             {
             case 'h':
-                return checkKeyword(2, 3, "ort", Token::TokenType::TOKEN_SHORT);
+                return check_keyword(2, 3, "ort", Token::TokenType::TOKEN_SHORT);
             case 'u':
-                return checkKeyword(2, 3, "per", Token::TokenType::TOKEN_SUPER);
+                return check_keyword(2, 3, "per", Token::TokenType::TOKEN_SUPER);
             }
         }
         break;
     case 't':
-        if (m_uiCurrent - m_uiStart > 1)
+        if (current - start > 1)
         {
-            switch (m_sSrc[m_uiStart + 1])
+            switch (src[start + 1])
             {
             case 'h':
-                return checkKeyword(2, 2, "is", Token::TokenType::TOKEN_THIS);
+                return check_keyword(2, 2, "is", Token::TokenType::TOKEN_THIS);
             case 'r':
-                return checkKeyword(2, 2, "ue", Token::TokenType::TOKEN_TRUE);
+                return check_keyword(2, 2, "ue", Token::TokenType::TOKEN_TRUE);
             }
         }
         break;
     case 'v':
-        return checkKeyword(1, 2, "ar", Token::TokenType::TOKEN_VAR);
+        return check_keyword(1, 2, "ar", Token::TokenType::TOKEN_VAR);
     case 'w':
-        return checkKeyword(1, 4, "hile", Token::TokenType::TOKEN_WHILE);
+        return check_keyword(1, 4, "hile", Token::TokenType::TOKEN_WHILE);
     }
     return Token::TokenType::TOKEN_IDENTIFIER;
 }
 
-Token::TokenType Scanner::checkKeyword(unsigned int p_uiStart, unsigned int p_uiLength, const std::string &p_sRest, Token::TokenType p_Type)
+Token::TokenType Scanner::check_keyword(unsigned int start, unsigned int length, const std::string &rest, Token::TokenType type)
 {
-    if (p_uiStart + p_uiLength == m_uiCurrent - m_uiStart && p_sRest == m_sSrc.substr(m_uiStart + p_uiStart, m_uiCurrent - m_uiStart - p_uiStart))
+    if (start + length == current - start && rest == src.substr(start + start, current - start - start))
     {
-        return p_Type;
+        return type;
     }
     return Token::TokenType::TOKEN_IDENTIFIER;
 }
 
 Token Scanner::scanToken()
 {
-    skipWhitespace();
-    if (isAtEnd())
+    skip_whitespace();
+    if (is_at_end())
     {
-        return Token(Token::TokenType::TOKEN_EOF, m_uiLine);
+        return Token(Token::TokenType::TOKEN_EOF, TokenPosition(file_name, line, column));
     }
-    m_uiStart = m_uiCurrent;
+    start = current;
     char c = advance();
-    if (isAlpha(c))
+    if (is_alpha(c))
     {
         return identifier();
     }
-    if (isDigit(c))
+    if (is_digit(c))
     {
         return number();
     }
     switch (c)
     {
     case '(':
-        return makeToken(Token::TokenType::TOKEN_LEFT_PAREN);
+        return make_token(Token::TokenType::TOKEN_LEFT_PAREN);
     case ')':
-        return makeToken(Token::TokenType::TOKEN_RIGHT_PAREN);
+        return make_token(Token::TokenType::TOKEN_RIGHT_PAREN);
     case '{':
-        return makeToken(Token::TokenType::TOKEN_LEFT_BRACE);
+        return make_token(Token::TokenType::TOKEN_LEFT_BRACE);
     case '}':
-        return makeToken(Token::TokenType::TOKEN_RIGHT_BRACE);
+        return make_token(Token::TokenType::TOKEN_RIGHT_BRACE);
     case ';':
-        return makeToken(Token::TokenType::TOKEN_SEMICOLON);
+        return make_token(Token::TokenType::TOKEN_SEMICOLON);
     case ',':
-        return makeToken(Token::TokenType::TOKEN_COMMA);
+        return make_token(Token::TokenType::TOKEN_COMMA);
     case '.':
-        return makeToken(Token::TokenType::TOKEN_DOT);
+        return make_token(Token::TokenType::TOKEN_DOT);
     case '-':
-        return makeToken(Token::TokenType::TOKEN_MINUS);
+        return make_token(Token::TokenType::TOKEN_MINUS);
     case '+':
-        return makeToken(Token::TokenType::TOKEN_PLUS);
+        return make_token(Token::TokenType::TOKEN_PLUS);
     case '/':
-        return makeToken(Token::TokenType::TOKEN_SLASH);
+        return make_token(Token::TokenType::TOKEN_SLASH);
     case '*':
-        return makeToken(Token::TokenType::TOKEN_STAR);
+        return make_token(Token::TokenType::TOKEN_STAR);
     case '!':
-        return makeToken(match('=') ? Token::TokenType::TOKEN_BANG_EQUAL : Token::TokenType::TOKEN_BANG);
+        return make_token(match('=') ? Token::TokenType::TOKEN_BANG_EQUAL : Token::TokenType::TOKEN_BANG);
     case '=':
-        return makeToken(match('=') ? Token::TokenType::TOKEN_EQUAL_EQUAL : Token::TokenType::TOKEN_EQUAL);
+        return make_token(match('=') ? Token::TokenType::TOKEN_EQUAL_EQUAL : Token::TokenType::TOKEN_EQUAL);
     case '<':
-        return makeToken(match('=') ? Token::TokenType::TOKEN_LESS_EQUAL : Token::TokenType::TOKEN_LESS);
+        return make_token(match('=') ? Token::TokenType::TOKEN_LESS_EQUAL : Token::TokenType::TOKEN_LESS);
     case '>':
-        return makeToken(match('=') ? Token::TokenType::TOKEN_GREATER_EQUAL : Token::TokenType::TOKEN_GREATER);
+        return make_token(match('=') ? Token::TokenType::TOKEN_GREATER_EQUAL : Token::TokenType::TOKEN_GREATER);
     case '"':
         return string();
-    //case '\'':
-
+        //case '\'':
     }
-    return Token(Token::TokenType::TOKEN_ERROR, m_uiLine, "Unexpected character: \"" + std::string(1, c) + "\".");
+    return Token(Token::TokenType::TOKEN_ERROR, TokenPosition(), "Unexpected character: \"" + std::string(1, c) + "\".");
 }

@@ -1,20 +1,21 @@
 #include "ExplicitCastExpr.hpp"
 #include "VisitorExpr.hpp"
-ExplicitCastExpr::ExplicitCastExpr(ExprPtr p_pExpr, LixDatatype p_Type, unsigned int p_uiLine) : m_pExpr(std::move(p_pExpr)),
-                                                                                                 m_to(p_Type),
-                                                                                                 Expr(p_uiLine)
+ExplicitCastExpr::ExplicitCastExpr(ExprPtr p_pExpr, LixDatatype p_Type, TokenPosition position) : Expr(position),
+                                                                                                  expr(std::move(p_pExpr)),
+                                                                                                  type(p_Type)
+
 {
 }
 
-void ExplicitCastExpr::visit(VisitorExpr *p_pVisitor)
+void ExplicitCastExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitExplicitCast(this);
+    visitor->visitExplicitCast(this);
 }
-Expr *ExplicitCastExpr::getExpr()
+Expr *ExplicitCastExpr::get_expr()
 {
-    return m_pExpr.get();
+    return expr.get();
 }
-LixDatatype ExplicitCastExpr::getTo()
+LixDatatype ExplicitCastExpr::get_type()
 {
-    return m_to;
+    return type;
 }

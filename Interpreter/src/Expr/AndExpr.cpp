@@ -1,21 +1,22 @@
 #include "AndExpr.hpp"
 #include "VisitorExpr.hpp"
 
-AndExpr::AndExpr(ExprPtr p_pLeft, ExprPtr p_pRight, unsigned int p_uiLine) : m_pLeft(std::move(p_pLeft)),
-                                                                             m_pRight(std::move(p_pRight)),
-                                                                             Expr(p_uiLine)
+AndExpr::AndExpr(ExprPtr left, ExprPtr right, TokenPosition position) : Expr(position),
+                                                                        left(std::move(left)),
+                                                                        right(std::move(right))
+
 {
 }
 
-void AndExpr::visit(VisitorExpr *p_pVisitor)
+void AndExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitAnd(this);
+    visitor->visitAnd(this);
 }
-Expr *AndExpr::getLeft()
+Expr *AndExpr::get_left()
 {
-    return m_pLeft.get();
+    return left.get();
 }
-Expr *AndExpr::getRight()
+Expr *AndExpr::get_right()
 {
-    return m_pRight.get();
+    return right.get();
 }

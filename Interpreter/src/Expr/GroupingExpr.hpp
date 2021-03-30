@@ -4,11 +4,10 @@
 class GroupingExpr : public Expr
 {
 private:
-    ExprPtr m_pExpr;
+    ExprPtr expr;
 
 public:
-    GroupingExpr(ExprPtr p_pExpr,unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    Expr * getExpr();
+    GroupingExpr(ExprPtr expr, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    Expr *get_expr();
 };
-

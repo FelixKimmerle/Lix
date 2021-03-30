@@ -6,12 +6,12 @@
 class BlockStmt : public Stmt
 {
 private:
-    std::vector<StmtPtr> m_vStmts;
+    std::vector<StmtPtr> stmts;
 
 public:
-    BlockStmt(unsigned int p_uiLine);
-    virtual void visit(VisitorStmt *p_pVisitor);
-    std::vector<StmtPtr>::iterator begin();
-    std::vector<StmtPtr>::iterator end();
+    BlockStmt(TokenPosition position);
+    virtual void visit(VisitorStmt *visitor);
+    std::vector<StmtPtr>::const_iterator begin()const;
+    std::vector<StmtPtr>::const_iterator end()const;
     void add(StmtPtr stmt);
 };

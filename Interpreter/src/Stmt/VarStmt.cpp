@@ -1,28 +1,29 @@
 #include "VarStmt.hpp"
 #include "Stmt/VisitorStmt.hpp"
-VarStmt::VarStmt(std::string p_sName, LixDatatype p_Type, ExprPtr p_Initializer, unsigned int p_uiLine) : m_Initializer(std::move(p_Initializer)),
-                                                                                                          Stmt(p_uiLine)
+VarStmt::VarStmt(std::string name, LixDatatype type, ExprPtr initializer, TokenPosition position) : Stmt(position),
+                                                                                                    initializer(std::move(initializer)),
+                                                                                                    type(type),
+                                                                                                    name(name)
+
 {
-    m_sName = p_sName;
-    m_Type = p_Type;
 }
 
-void VarStmt::visit(VisitorStmt *p_pVisitor)
+void VarStmt::visit(VisitorStmt *visitor)
 {
-    p_pVisitor->visitVar(this);
+    visitor->visitVar(this);
 }
 
-Expr *VarStmt::getInitializer()
+Expr *VarStmt::get_initializer()
 {
-    return m_Initializer.get();
+    return initializer.get();
 }
 
-LixDatatype VarStmt::getType()
+LixDatatype VarStmt::get_type()
 {
-    return m_Type;
+    return type;
 }
 
-std::string VarStmt::getName()
+std::string VarStmt::get_name()
 {
-    return m_sName;
+    return name;
 }

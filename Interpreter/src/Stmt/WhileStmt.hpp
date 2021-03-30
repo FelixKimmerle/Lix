@@ -5,12 +5,12 @@
 class WhileStmt : public Stmt
 {
 private:
-	ExprPtr m_pCondition;
-	StmtPtr m_pBody;
+	ExprPtr condition;
+	StmtPtr body;
 
 public:
-	WhileStmt(ExprPtr p_pCondition, StmtPtr p_pBody, unsigned int p_uiLine);
-	Expr *getCondition();
-	Stmt *getBody();
-	void visit(VisitorStmt *p_pVisitor);
+	WhileStmt(ExprPtr condition, StmtPtr body, TokenPosition position);
+	void visit(VisitorStmt *visitor);
+	Expr *get_condition();
+	Stmt *get_body();
 };

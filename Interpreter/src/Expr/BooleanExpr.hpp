@@ -6,10 +6,10 @@
 class BooleanExpr : public Expr
 {
 private:
-    Lix_Bool m_Boolean;
+    Lix_Bool boolean;
 
 public:
-    BooleanExpr(Lix_Bool p_Boolean, unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    Lix_Bool getBoolean();
+    BooleanExpr(Lix_Bool boolean, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    Lix_Bool get_boolean();
 };

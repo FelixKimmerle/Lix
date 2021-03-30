@@ -1,22 +1,23 @@
 #include "CallExpr.hpp"
 #include "VisitorExpr.hpp"
 
-CallExpr::CallExpr(ExprPtr callee, unsigned int p_uiLine) : Expr(p_uiLine), callee(std::move(callee))
+CallExpr::CallExpr(ExprPtr callee, TokenPosition position) : Expr(position),
+                                                             callee(std::move(callee))
 {
 }
 
-void CallExpr::visit(VisitorExpr *p_pVisitor)
+void CallExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitCall(this);
+    visitor->visitCall(this);
 }
 
 std::vector<ExprPtr>::iterator CallExpr::begin()
 {
-    return m_vParams.begin();
+    return params.begin();
 }
 std::vector<ExprPtr>::iterator CallExpr::end()
 {
-    return m_vParams.end();
+    return params.end();
 }
 
 Expr *CallExpr::get_callee()
@@ -26,5 +27,5 @@ Expr *CallExpr::get_callee()
 
 void CallExpr::add_param(ExprPtr param)
 {
-    m_vParams.push_back(std::move(param));
+    params.push_back(std::move(param));
 }

@@ -12,12 +12,12 @@ public:
     };
 
 private:
-    ExprPtr m_pExpr;
-    UnaryOperator m_UnaryOperator;
+    ExprPtr expr;
+    UnaryOperator unary_operator;
 
 public:
-    UnaryExpr(ExprPtr p_pExpr, UnaryOperator p_UnaryOperator, unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    Expr *getExpr();
-    UnaryOperator getOperator();
+    UnaryExpr(ExprPtr expr, UnaryOperator unary_operator, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    Expr *get_expr();
+    UnaryOperator get_unary_operator();
 };

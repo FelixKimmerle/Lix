@@ -6,9 +6,10 @@
 class PrintStmt : public Stmt
 {
 private:
-    ExprPtr m_pExpr;
+    ExprPtr expr;
+
 public:
-    PrintStmt(ExprPtr p_pExpr,unsigned int p_uiLine);
-    void visit(VisitorStmt *p_pVisitor);
-    Expr * getExpr();
+    PrintStmt(ExprPtr expr, TokenPosition position);
+    void visit(VisitorStmt *visitor);
+    Expr *get_expr();
 };

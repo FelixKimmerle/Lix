@@ -1,20 +1,21 @@
 #include "OrExpr.hpp"
 #include "VisitorExpr.hpp"
-OrExpr::OrExpr(ExprPtr p_pLeft, ExprPtr p_pRight, unsigned int p_uiLine) : m_pLeft(std::move(p_pLeft)),
-                                                                           m_pRight(std::move(p_pRight)),
-                                                                           Expr(p_uiLine)
+OrExpr::OrExpr(ExprPtr left, ExprPtr right, TokenPosition position) : Expr(position),
+                                                                      left(std::move(left)),
+                                                                      right(std::move(right))
+
 {
 }
 
-void OrExpr::visit(VisitorExpr *p_pVisitor)
+void OrExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitOr(this);
+    visitor->visitOr(this);
 }
-Expr *OrExpr::getLeft()
+Expr *OrExpr::get_left()
 {
-    return m_pLeft.get();
+    return left.get();
 }
-Expr *OrExpr::getRight()
+Expr *OrExpr::get_right()
 {
-    return m_pRight.get();
+    return right.get();
 }

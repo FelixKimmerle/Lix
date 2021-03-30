@@ -14,11 +14,7 @@
 
 class VisitorExpr
 {
-private:
-    /* data */
 public:
-    VisitorExpr(/* args */);
-    virtual ~VisitorExpr();
     virtual void visitBinary(BinaryExpr *p_pExpr) = 0;
     virtual void visitUnary(UnaryExpr *p_pExpr) = 0;
     virtual void visitGrouping(GroupingExpr *p_pExpr) = 0;

@@ -7,9 +7,9 @@ template <class T>
 class NumberExpr : public Expr
 {
 private:
-    T m_Number;
+    T number;
 public:
-    NumberExpr(T p_Number, unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    T getNumber();
+    NumberExpr(T number, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    T get_number();
 };

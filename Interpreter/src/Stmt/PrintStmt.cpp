@@ -1,17 +1,18 @@
 #include "Stmt/PrintStmt.hpp"
 #include "Stmt/VisitorStmt.hpp"
 
-PrintStmt::PrintStmt(ExprPtr p_pExpr, unsigned int p_uiLine) : m_pExpr(std::move(p_pExpr)),
-                                                               Stmt(p_uiLine)
+PrintStmt::PrintStmt(ExprPtr expr, TokenPosition position) : Stmt(position),
+                                                             expr(std::move(expr))
+
 {
 }
 
-void PrintStmt::visit(VisitorStmt *p_pVisitor)
+void PrintStmt::visit(VisitorStmt *visitor)
 {
-    p_pVisitor->visitPrint(this);
+    visitor->visitPrint(this);
 }
 
-Expr *PrintStmt::getExpr()
+Expr *PrintStmt::get_expr()
 {
-    return m_pExpr.get();
+    return expr.get();
 }

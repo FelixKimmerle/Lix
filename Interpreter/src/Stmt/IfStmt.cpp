@@ -1,28 +1,29 @@
 #include "IfStmt.hpp"
 #include "VisitorStmt.hpp"
-IfStmt::IfStmt(ExprPtr p_pCondition, StmtPtr p_pThen, StmtPtr p_pElse, unsigned int p_uiLine) : m_pCondition(std::move(p_pCondition)),
-																								m_pThen(std::move(p_pThen)),
-																								m_pElse(std::move(p_pElse)),
-																								Stmt(p_uiLine)
+IfStmt::IfStmt(ExprPtr condition, StmtPtr then_body, StmtPtr else_body, TokenPosition position) : Stmt(position),
+																								  condition(std::move(condition)),
+																								  then_body(std::move(then_body)),
+																								  else_body(std::move(else_body))
+
 {
 }
 
-void IfStmt::visit(VisitorStmt *p_pVisitor)
+void IfStmt::visit(VisitorStmt *visitor)
 {
-	p_pVisitor->visitIf(this);
+	visitor->visitIf(this);
 }
 
-Expr *IfStmt::getCondition()
+Expr *IfStmt::get_condition()
 {
-	return m_pCondition.get();
+	return condition.get();
 }
 
-Stmt *IfStmt::getThen()
+Stmt *IfStmt::get_then()
 {
-	return m_pThen.get();
+	return then_body.get();
 }
 
-Stmt *IfStmt::getElse()
+Stmt *IfStmt::get_else()
 {
-	return m_pElse.get();
+	return else_body.get();
 }

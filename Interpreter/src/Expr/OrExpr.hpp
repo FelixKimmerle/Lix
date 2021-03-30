@@ -4,13 +4,13 @@
 class OrExpr : public Expr
 {
 private:
-    ExprPtr m_pLeft;
-    ExprPtr m_pRight;
+    ExprPtr left;
+    ExprPtr right;
 
 public:
-    OrExpr(ExprPtr p_pLeft, ExprPtr p_pRight,unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    Expr *getLeft();
-    Expr *getRight();
+    OrExpr(ExprPtr left, ExprPtr right, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    Expr *get_left();
+    Expr *get_right();
 };
 

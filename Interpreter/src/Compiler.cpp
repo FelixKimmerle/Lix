@@ -1,14 +1,10 @@
 #include "Compiler.hpp"
 #include <iostream>
 
-Compiler::Compiler(Logger *p_Logger, Lix_Func function, LixDatatype return_type) : m_bHadError(false), m_Logger(p_Logger), function(function), return_type(return_type)
+Compiler::Compiler(Logger *p_Logger, Lix_Func function, LixDatatype return_type) : had_error(false), logger(p_Logger), function(function), return_type(return_type)
 {
 }
-Compiler::Compiler(Logger *p_Logger, LixDatatype return_type) : m_bHadError(false), m_Logger(p_Logger), function(new ObjFunction("main", 0)), return_type(return_type)
-{
-}
-
-Compiler::~Compiler()
+Compiler::Compiler(Logger *p_Logger, LixDatatype return_type) : had_error(false), logger(p_Logger), function(new ObjFunction("main", 0)), return_type(return_type)
 {
 }
 
@@ -23,7 +19,7 @@ Chunk::OpCode Compiler::cast(LixDatatype p_From, LixDatatype p_To)
     return (Chunk::OpCode)opcode;
 }
 
-void Compiler::popOne(bool moditernstack)
+void Compiler::pop_one(bool moditernstack)
 {
     currentChunk()->write((uint8_t)Chunk::OpCode::OP_POP_BYTE + (uint8_t)m_Stack.back());
     if (moditernstack)
@@ -32,7 +28,7 @@ void Compiler::popOne(bool moditernstack)
     }
 }
 
-void Compiler::popStack(unsigned int n)
+void Compiler::pop_stack(unsigned int n)
 {
     unsigned int bytes = 0;
     for (size_t i = 0; i < n; i++)
@@ -57,7 +53,7 @@ uint8_t Compiler::stack_size(unsigned int n)
     return bytes;
 }
 
-void Compiler::pushZero(LixDatatype m_Type)
+void Compiler::push_zero(LixDatatype m_Type)
 {
     if (m_Type == LixDatatype::LD_Bool)
     {
@@ -72,16 +68,16 @@ void Compiler::pushZero(LixDatatype m_Type)
 
 void Compiler::error(unsigned int line, const std::string &message)
 {
-    m_bHadError = true;
-    m_Logger->log("Error at line: " + std::to_string(line) + ". " + message, Logger::Error);
+    had_error = true;
+    logger->log("Error at line: " + std::to_string(line) + ". " + message, Logger::Error);
 }
 
 bool Compiler::hadError()
 {
-    return m_bHadError;
+    return had_error;
 }
 
-void Compiler::addVar(Variable variable)
+void Compiler::add_var(Variable variable)
 {
     for (auto var = m_Variables.rbegin(); var != m_Variables.rend(); ++var)
     {
@@ -107,7 +103,7 @@ unsigned int Compiler::size_of_variables()
     return size;
 }
 
-std::pair<uint32_t, LixDatatype> Compiler::resolveVar(VarExpr *p_pExpr)
+std::pair<uint32_t, LixDatatype> Compiler::resolve_var(VarExpr *p_pExpr)
 {
     unsigned int index = m_Variables.size();
     LixDatatype type;
@@ -140,7 +136,7 @@ std::pair<uint32_t, LixDatatype> Compiler::resolveVar(VarExpr *p_pExpr)
 void Compiler::visitBinary(BinaryExpr *p_pExpr)
 {
 
-    p_pExpr->getLeft()->visit(this);
+    p_pExpr->get_left()->visit(this);
     LixDatatype leftType = m_Stack.back();
     /*
     if (m_Stack.back() != p_pExpr->resultingType())
@@ -150,7 +146,7 @@ void Compiler::visitBinary(BinaryExpr *p_pExpr)
         m_Stack.push_back(p_pExpr->resultingType());
     }
     */
-    p_pExpr->getRight()->visit(this);
+    p_pExpr->get_right()->visit(this);
     LixDatatype rightType = m_Stack.back();
 
     /*
@@ -169,7 +165,7 @@ void Compiler::visitBinary(BinaryExpr *p_pExpr)
 
     LixDatatype resultingType = rightType;
 
-    switch (p_pExpr->getOperator())
+    switch (p_pExpr->get_binary_operator())
     {
     case BinaryExpr::BO_ADD:
         if (resultingType == LixDatatype::LD_Bool)
@@ -204,12 +200,12 @@ void Compiler::visitBinary(BinaryExpr *p_pExpr)
 }
 void Compiler::visitUnary(UnaryExpr *p_pExpr)
 {
-    p_pExpr->getExpr()->visit(this);
-    if (m_Stack.back() == LixDatatype::LD_Bool && p_pExpr->getOperator() == UnaryExpr::UnaryOperator::UO_MINUS)
+    p_pExpr->get_expr()->visit(this);
+    if (m_Stack.back() == LixDatatype::LD_Bool && p_pExpr->get_unary_operator() == UnaryExpr::UnaryOperator::UO_MINUS)
     {
         error(p_pExpr->getLine(), "Dont use \'-\' to negate bool use \'!\' instead.");
     }
-    if (m_Stack.back() < LixDatatype::LD_Bool && p_pExpr->getOperator() == UnaryExpr::UnaryOperator::UO_MINUS)
+    if (m_Stack.back() < LixDatatype::LD_Bool && p_pExpr->get_unary_operator() == UnaryExpr::UnaryOperator::UO_MINUS)
     {
         error(p_pExpr->getLine(), "Dont use \'!\' to negate numerical values use \'-\' instead.");
     }
@@ -217,55 +213,55 @@ void Compiler::visitUnary(UnaryExpr *p_pExpr)
 }
 void Compiler::visitGrouping(GroupingExpr *p_pExpr)
 {
-    p_pExpr->getExpr()->visit(this);
+    p_pExpr->get_expr()->visit(this);
 }
 
 void Compiler::visitNumber(NumberExpr<Lix_Byte> *p_pExpr)
 {
     currentChunk()->write(Chunk::OpCode::OP_CONSTANT_BYTE);
-    uint8_t id = currentChunk()->addConstant<Lix_Byte>(p_pExpr->getNumber());
+    uint8_t id = currentChunk()->addConstant<Lix_Byte>(p_pExpr->get_number());
     currentChunk()->write(id);
     m_Stack.push_back(LixDatatype::LD_Byte);
 }
 void Compiler::visitNumber(NumberExpr<Lix_Double> *p_pExpr)
 {
     currentChunk()->write(Chunk::OpCode::OP_CONSTANT_DOUBLE);
-    uint8_t id = currentChunk()->addConstant<Lix_Double>(p_pExpr->getNumber());
+    uint8_t id = currentChunk()->addConstant<Lix_Double>(p_pExpr->get_number());
     currentChunk()->write(id);
     m_Stack.push_back(LixDatatype::LD_Double);
 }
 void Compiler::visitNumber(NumberExpr<Lix_Float> *p_pExpr)
 {
     currentChunk()->write(Chunk::OpCode::OP_CONSTANT_FLOAT);
-    uint8_t id = currentChunk()->addConstant<Lix_Float>(p_pExpr->getNumber());
+    uint8_t id = currentChunk()->addConstant<Lix_Float>(p_pExpr->get_number());
     currentChunk()->write(id);
     m_Stack.push_back(LixDatatype::LD_Float);
 }
 void Compiler::visitNumber(NumberExpr<Lix_Int> *p_pExpr)
 {
     currentChunk()->write(Chunk::OpCode::OP_CONSTANT_INT);
-    uint8_t id = currentChunk()->addConstant<Lix_Int>(p_pExpr->getNumber());
+    uint8_t id = currentChunk()->addConstant<Lix_Int>(p_pExpr->get_number());
     currentChunk()->write(id);
     m_Stack.push_back(LixDatatype::LD_Int);
 }
 void Compiler::visitNumber(NumberExpr<Lix_LongInt> *p_pExpr)
 {
     currentChunk()->write(Chunk::OpCode::OP_CONSTANT_LONGINT);
-    uint8_t id = currentChunk()->addConstant<Lix_LongInt>(p_pExpr->getNumber());
+    uint8_t id = currentChunk()->addConstant<Lix_LongInt>(p_pExpr->get_number());
     currentChunk()->write(id);
     m_Stack.push_back(LixDatatype::LD_LongInt);
 }
 void Compiler::visitNumber(NumberExpr<Lix_ShortInt> *p_pExpr)
 {
     currentChunk()->write(Chunk::OpCode::OP_CONSTANT_SHORTINT);
-    uint8_t id = currentChunk()->addConstant<Lix_ShortInt>(p_pExpr->getNumber());
+    uint8_t id = currentChunk()->addConstant<Lix_ShortInt>(p_pExpr->get_number());
     currentChunk()->write(id);
     m_Stack.push_back(LixDatatype::LD_ShortInt);
 }
 
 void Compiler::visitBoolean(BooleanExpr *p_pExpr)
 {
-    if (p_pExpr->getBoolean())
+    if (p_pExpr->get_boolean())
     {
         currentChunk()->write(Chunk::OpCode::OP_TRUE);
     }
@@ -279,19 +275,19 @@ void Compiler::visitBoolean(BooleanExpr *p_pExpr)
 
 void Compiler::visitExplicitCast(ExplicitCastExpr *p_pExpr)
 {
-    p_pExpr->getExpr()->visit(this);
+    p_pExpr->get_expr()->visit(this);
     LixDatatype from = m_Stack.back();
-    if (from != p_pExpr->getTo())
+    if (from != p_pExpr->get_type())
     {
         m_Stack.pop_back();
-        currentChunk()->write(cast(from, p_pExpr->getTo()));
-        m_Stack.push_back(p_pExpr->getTo());
+        currentChunk()->write(cast(from, p_pExpr->get_type()));
+        m_Stack.push_back(p_pExpr->get_type());
     }
 }
 
 void Compiler::visitVar(VarExpr *p_pExpr)
 {
-    std::pair<uint32_t, LixDatatype> var = resolveVar(p_pExpr);
+    std::pair<uint32_t, LixDatatype> var = resolve_var(p_pExpr);
     uint32_t offset = var.first;
     uint8_t a = offset & 0xFF;
     uint8_t b = offset >> 8;
@@ -303,30 +299,30 @@ void Compiler::visitVar(VarExpr *p_pExpr)
 
 void Compiler::visitOr(OrExpr *p_pExpr)
 {
-    p_pExpr->getLeft()->visit(this);
+    p_pExpr->get_left()->visit(this);
     unsigned int elseJump = currentChunk()->emitJump(Chunk::OpCode::OP_JUMP_IF_FALSE);
     unsigned int endJump = currentChunk()->emitJump(Chunk::OpCode::OP_JUMP);
     currentChunk()->patchJump(elseJump);
-    popOne();
-    p_pExpr->getRight()->visit(this);
+    pop_one();
+    p_pExpr->get_right()->visit(this);
     currentChunk()->patchJump(endJump);
     m_Stack.pop_back();
 }
 void Compiler::visitAnd(AndExpr *p_pExpr)
 {
-    p_pExpr->getLeft()->visit(this);
+    p_pExpr->get_left()->visit(this);
     unsigned int endJump = currentChunk()->emitJump(Chunk::OpCode::OP_JUMP_IF_FALSE);
-    popOne();
-    p_pExpr->getRight()->visit(this);
+    pop_one();
+    p_pExpr->get_right()->visit(this);
     currentChunk()->patchJump(endJump);
     m_Stack.pop_back();
 }
 void Compiler::visitComparison(ComparisonExpr *p_pExpr)
 {
-    p_pExpr->getLeft()->visit(this);
+    p_pExpr->get_left()->visit(this);
     LixDatatype leftType = m_Stack.back();
 
-    p_pExpr->getRight()->visit(this);
+    p_pExpr->get_right()->visit(this);
     LixDatatype rightType = m_Stack.back();
 
     if (rightType != leftType)
@@ -334,7 +330,7 @@ void Compiler::visitComparison(ComparisonExpr *p_pExpr)
         error(p_pExpr->getLine(), "Type of left operand (" + lixDatatypeToString(leftType) + ") does not match type of right operand (" + lixDatatypeToString(rightType) + ")");
     }
 
-    switch (p_pExpr->getOperator())
+    switch (p_pExpr->get_binary_operator())
     {
     case ComparisonExpr::BO_GREATER:
         if (rightType == LixDatatype::LD_Bool)
@@ -383,17 +379,17 @@ void Compiler::visitFuncDecl(FuncDecl *p_pStmt)
         stack_offset += getSize(arg.first);
     }
 
-    Lix_Func func = new ObjFunction(p_pStmt->getName(), stack_offset);
-    Compiler comp(m_Logger, func, p_pStmt->get_return_type());
+    Lix_Func func = new ObjFunction(p_pStmt->get_name(), stack_offset);
+    Compiler comp(logger, func, p_pStmt->get_return_type());
     for (auto &&arg : *p_pStmt)
     {
-        comp.addVar(Variable(arg.first, arg.second, 0, p_pStmt->getLine()));
+        comp.add_var(Variable(arg.first, arg.second, 0, p_pStmt->getLine()));
     }
 
-    comp.compile(p_pStmt->getBody());
-    func->getChunk()->disassemble(p_pStmt->getName());
+    comp.compile(p_pStmt->get_body());
+    func->getChunk()->disassemble(p_pStmt->get_name());
 
-    addVar(Variable(LixDatatype::LD_FUNC, p_pStmt->getName(), m_uiCurrentDepth, p_pStmt->getLine()));
+    add_var(Variable(LixDatatype::LD_FUNC, p_pStmt->get_name(), m_uiCurrentDepth, p_pStmt->getLine()));
     m_Stack.push_back(LixDatatype::LD_FUNC);
     currentChunk()->write(Chunk::OpCode::OP_PUSH_FUNC, p_pStmt->getLine());
 
@@ -404,12 +400,12 @@ void Compiler::visitFuncDecl(FuncDecl *p_pStmt)
 
 void Compiler::visitReturnStmt(ReturnStmt *p_pStmt)
 {
-    p_pStmt->getExpr()->visit(this);
+    p_pStmt->get_expr()->visit(this);
 }
 
 void Compiler::visitPrint(PrintStmt *p_pStmt)
 {
-    p_pStmt->getExpr()->visit(this);
+    p_pStmt->get_expr()->visit(this);
     currentChunk()->write((uint8_t)Chunk::OpCode::OP_PRINT_BYTE + (uint8_t)m_Stack.back());
     m_Stack.pop_back();
 }
@@ -429,39 +425,39 @@ void Compiler::visitBlock(BlockStmt *p_pStmt)
         pops++;
     }
 
-    popStack(pops);
+    pop_stack(pops);
 }
 void Compiler::visitVar(VarStmt *p_pStmt)
 {
-    addVar(Variable(p_pStmt->getType(), p_pStmt->getName(), m_uiCurrentDepth, p_pStmt->getLine()));
-    if (p_pStmt->getInitializer() != nullptr)
+    add_var(Variable(p_pStmt->get_type(), p_pStmt->get_name(), m_uiCurrentDepth, p_pStmt->getLine()));
+    if (p_pStmt->get_initializer() != nullptr)
     {
-        p_pStmt->getInitializer()->visit(this);
-        if (m_Stack.back() != p_pStmt->getType())
+        p_pStmt->get_initializer()->visit(this);
+        if (m_Stack.back() != p_pStmt->get_type())
         {
-            currentChunk()->write(cast(m_Stack.back(), p_pStmt->getType()));
+            currentChunk()->write(cast(m_Stack.back(), p_pStmt->get_type()));
             m_Stack.pop_back();
-            m_Stack.push_back(p_pStmt->getType());
+            m_Stack.push_back(p_pStmt->get_type());
         }
     }
     else
     {
-        pushZero(p_pStmt->getType());
+        push_zero(p_pStmt->get_type());
     }
 }
 
 void Compiler::visitIf(IfStmt *p_pStmt)
 {
-    p_pStmt->getCondition()->visit(this);
+    p_pStmt->get_condition()->visit(this);
     unsigned int thenJump = currentChunk()->emitJump(Chunk::OpCode::OP_JUMP_IF_FALSE);
-    popOne();
-    p_pStmt->getThen()->visit(this);
+    pop_one();
+    p_pStmt->get_then()->visit(this);
     unsigned int elseJump = currentChunk()->emitJump(Chunk::OpCode::OP_JUMP);
     currentChunk()->patchJump(thenJump);
-    popOne();
-    if (p_pStmt->getElse() != nullptr)
+    pop_one();
+    if (p_pStmt->get_else() != nullptr)
     {
-        p_pStmt->getElse()->visit(this);
+        p_pStmt->get_else()->visit(this);
     }
     currentChunk()->patchJump(elseJump);
     m_Stack.pop_back();
@@ -470,48 +466,48 @@ void Compiler::visitIf(IfStmt *p_pStmt)
 void Compiler::visitWhile(WhileStmt *p_pStmt)
 {
     unsigned int loopStart = currentChunk()->getChunkPos();
-    p_pStmt->getCondition()->visit(this);
+    p_pStmt->get_condition()->visit(this);
     unsigned int exitJump = currentChunk()->emitJump(Chunk::OpCode::OP_JUMP_IF_FALSE);
-    popOne();
-    p_pStmt->getBody()->visit(this);
+    pop_one();
+    p_pStmt->get_body()->visit(this);
     currentChunk()->emitLoop(loopStart);
     currentChunk()->patchJump(exitJump);
-    popOne();
+    pop_one();
     m_Stack.pop_back();
 }
 void Compiler::visitFor(ForStmt *p_pStmt)
 {
-    if (p_pStmt->getInitializer() != nullptr)
+    if (p_pStmt->get_initializer() != nullptr)
     {
-        p_pStmt->getInitializer()->visit(this);
+        p_pStmt->get_initializer()->visit(this);
     }
     unsigned int loopStart = currentChunk()->getChunkPos();
     unsigned int jump = 0;
-    if (p_pStmt->getCondition() != nullptr)
+    if (p_pStmt->get_condition() != nullptr)
     {
-        p_pStmt->getCondition()->visit(this);
+        p_pStmt->get_condition()->visit(this);
         jump = currentChunk()->emitJump(Chunk::OpCode::OP_JUMP_IF_FALSE);
-        popOne();
+        pop_one();
     }
-    p_pStmt->getBody()->visit(this);
-    if (p_pStmt->getIncrement() != nullptr)
+    p_pStmt->get_body()->visit(this);
+    if (p_pStmt->get_increment() != nullptr)
     {
-        p_pStmt->getIncrement()->visit(this);
-        popOne(true);
+        p_pStmt->get_increment()->visit(this);
+        pop_one(true);
     }
     currentChunk()->emitLoop(loopStart);
-    if (p_pStmt->getCondition() != nullptr)
+    if (p_pStmt->get_condition() != nullptr)
     {
         currentChunk()->patchJump(jump);
-        popOne();
+        pop_one();
         m_Stack.pop_back();
     }
     //popStack(p_pStmt->getPops());
 }
 void Compiler::visitExprStmt(ExprStmt *p_pStmt)
 {
-    p_pStmt->getExpr()->visit(this);
-    popOne(true);
+    p_pStmt->get_expr()->visit(this);
+    pop_one(true);
 }
 
 void Compiler::visitCall(CallExpr *p_pExpr)
@@ -532,9 +528,9 @@ void Compiler::visitCall(CallExpr *p_pExpr)
 
 void Compiler::visitAssign(AssignExpr *p_pExpr)
 {
-    p_pExpr->getExpr()->visit(this);
+    p_pExpr->get_expr()->visit(this);
     currentChunk()->write((uint8_t)Chunk::OpCode::OP_SET_BYTE + (uint8_t)m_Stack.back());
-    std::pair<uint32_t, LixDatatype> var = resolveVar(p_pExpr->getVarExpr());
+    std::pair<uint32_t, LixDatatype> var = resolve_var(p_pExpr->get_var_expr());
     uint32_t offset = var.first;
     uint8_t a = offset & 0xFF;
     uint8_t b = offset >> 8;
@@ -542,10 +538,10 @@ void Compiler::visitAssign(AssignExpr *p_pExpr)
     currentChunk()->write(b);
 }
 
-Lix_Func Compiler::compile(BlockStmt* block)
+Lix_Func Compiler::compile(const BlockStmt &block)
 {
     m_uiCurrentDepth = 0;
-    for (auto &&stmt : *block)
+    for (auto &stmt : block)
     {
         stmt->visit(this);
     }

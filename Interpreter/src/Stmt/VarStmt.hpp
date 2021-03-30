@@ -9,14 +9,14 @@
 class VarStmt : public Stmt
 {
 private:
-    ExprPtr m_Initializer;
-    LixDatatype m_Type;
-    std::string m_sName;
+    ExprPtr initializer;
+    LixDatatype type;
+    std::string name;
 
 public:
-    VarStmt(std::string p_sName, LixDatatype p_Type, ExprPtr p_Initializer, unsigned int p_uiLine);
-    virtual void visit(VisitorStmt *p_pVisitor);
-    Expr *getInitializer();
-    LixDatatype getType();
-    std::string getName();
+    VarStmt(std::string name, LixDatatype type, ExprPtr initializer, TokenPosition position);
+    virtual void visit(VisitorStmt *visitor);
+    Expr *get_initializer();
+    LixDatatype get_type();
+    std::string get_name();
 };

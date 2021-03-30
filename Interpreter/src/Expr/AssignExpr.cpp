@@ -1,23 +1,24 @@
 #include "AssignExpr.hpp"
 #include "VisitorExpr.hpp"
 
-AssignExpr::AssignExpr(std::unique_ptr<VarExpr> p_pVarExpr, ExprPtr p_pExpr, unsigned int p_uiLine) : m_pExpr(std::move(p_pExpr)),
-                                                                                                      m_pVarExpr(std::move(p_pVarExpr)),
-                                                                                                      Expr(p_uiLine)
+AssignExpr::AssignExpr(std::unique_ptr<VarExpr> var_expr, ExprPtr expr, TokenPosition position) : Expr(position),
+                                                                                                  expr(std::move(expr)),
+                                                                                                  var_expr(std::move(var_expr))
+
 {
 }
 
-void AssignExpr::visit(VisitorExpr *p_pVisitor)
+void AssignExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitAssign(this);
+    visitor->visitAssign(this);
 }
 
-Expr *AssignExpr::getExpr()
+Expr *AssignExpr::get_expr()
 {
-    return m_pExpr.get();
+    return expr.get();
 }
 
-VarExpr *AssignExpr::getVarExpr()
+VarExpr *AssignExpr::get_var_expr()
 {
-    return m_pVarExpr.get();
+    return var_expr.get();
 }

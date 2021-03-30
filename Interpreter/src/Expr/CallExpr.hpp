@@ -5,11 +5,11 @@
 class CallExpr : public Expr
 {
 private:
-    std::vector<ExprPtr> m_vParams;
     ExprPtr callee;
+    std::vector<ExprPtr> params;
 
 public:
-    CallExpr(ExprPtr callee, unsigned int p_uiLine);
+    CallExpr(ExprPtr callee, TokenPosition position);
     void visit(VisitorExpr *p_pVisitor);
     Expr *get_callee();
     void add_param(ExprPtr param);

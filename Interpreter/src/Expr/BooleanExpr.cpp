@@ -2,16 +2,17 @@
 #include "BooleanExpr.hpp"
 #include "VisitorExpr.hpp"
 
-BooleanExpr::BooleanExpr(Lix_Bool p_Boolean, unsigned int p_uiLine) : m_Boolean(p_Boolean), Expr(p_uiLine)
+BooleanExpr::BooleanExpr(Lix_Bool p_Boolean, TokenPosition position) : Expr(position),
+                                                                       boolean(p_Boolean)
 {
 }
 
-void BooleanExpr::visit(VisitorExpr *p_pVisitor)
+void BooleanExpr::visit(VisitorExpr *visitor)
 {
-    p_pVisitor->visitBoolean(this);
+    visitor->visitBoolean(this);
 }
 
-Lix_Bool BooleanExpr::getBoolean()
+Lix_Bool BooleanExpr::get_boolean()
 {
-    return m_Boolean;
+    return boolean;
 }

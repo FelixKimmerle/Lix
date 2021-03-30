@@ -15,13 +15,14 @@ public:
     };
 
 private:
-    ExprPtr m_pLeft;
-    ExprPtr m_pRight;
-    ComparisonOperator m_BinaryOperator;
+    ExprPtr left;
+    ExprPtr right;
+    ComparisonOperator binary_operator;
+
 public:
-    ComparisonExpr(ExprPtr p_pLeft, ExprPtr p_pRight, ComparisonExpr::ComparisonOperator p_BinaryOperator,unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    Expr * getLeft();
-    Expr * getRight();
-    ComparisonOperator getOperator();
+    ComparisonExpr(ExprPtr left, ExprPtr right, ComparisonOperator binary_operator, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    Expr *get_left();
+    Expr *get_right();
+    ComparisonOperator get_binary_operator();
 };

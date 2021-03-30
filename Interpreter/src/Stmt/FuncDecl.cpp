@@ -1,12 +1,12 @@
 #include "FuncDecl.hpp"
 #include "VisitorStmt.hpp"
-FuncDecl::FuncDecl(std::string p_sName, LixDatatype p_return_type, const std::vector<std::pair<LixDatatype, std::string>> p_vArgs,
-                   std::unique_ptr<BlockStmt> p_Body, unsigned int p_uiLine) : m_Body(std::move(p_Body)),
-                                                                               Stmt(p_uiLine),
-                                                                               return_type(p_return_type)
+FuncDecl::FuncDecl(std::string name, LixDatatype return_type, const std::vector<std::pair<LixDatatype, std::string>> args,
+                   std::unique_ptr<BlockStmt> body, TokenPosition position) : Stmt(position),
+                                                                              body(std::move(body)),
+                                                                              return_type(return_type),
+                                                                              args(args),
+                                                                              name(name)
 {
-    m_vArgs = p_vArgs;
-    m_sName = p_sName;
 }
 
 void FuncDecl::visit(VisitorStmt *p_pVisitor)
@@ -14,14 +14,14 @@ void FuncDecl::visit(VisitorStmt *p_pVisitor)
     p_pVisitor->visitFuncDecl(this);
 }
 
-BlockStmt *FuncDecl::getBody()
+BlockStmt *FuncDecl::get_body()
 {
-    return m_Body.get();
+    return body.get();
 }
 
-std::string FuncDecl::getName() const
+std::string FuncDecl::get_name() const
 {
-    return m_sName;
+    return name;
 }
 
 LixDatatype FuncDecl::get_return_type() const
@@ -31,14 +31,14 @@ LixDatatype FuncDecl::get_return_type() const
 
 std::vector<std::pair<LixDatatype, std::string>>::iterator FuncDecl::begin()
 {
-    return m_vArgs.begin();
+    return args.begin();
 }
 std::vector<std::pair<LixDatatype, std::string>>::iterator FuncDecl::end()
 {
-    return m_vArgs.end();
+    return args.end();
 }
 
 unsigned int FuncDecl::get_arity() const
 {
-    return m_vArgs.size();
+    return args.size();
 }

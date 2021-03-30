@@ -1,5 +1,6 @@
 #pragma once
 #include "LixTypenames.hpp"
+#include "TokenPosition.hpp"
 
 #include <memory>
 
@@ -7,11 +8,12 @@ class VisitorExpr;
 class Expr
 {
 protected:
-    unsigned int m_uiLine;
+    TokenPosition position;
+
 public:
-    Expr(unsigned int p_uiLine);
+    Expr(TokenPosition position);
     virtual void visit(VisitorExpr *p_pVisitor) = 0;
-    virtual unsigned int getLine();
+    virtual TokenPosition get_position();
 };
 
 typedef std::unique_ptr<Expr> ExprPtr;

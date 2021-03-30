@@ -8,16 +8,16 @@
 class FuncDecl : public Stmt
 {
 private:
-    std::vector<std::pair<LixDatatype, std::string>> m_vArgs;
-    std::unique_ptr<BlockStmt> m_Body;
-    std::string m_sName;
+    std::vector<std::pair<LixDatatype, std::string>> args;
+    std::unique_ptr<BlockStmt> body;
+    std::string name;
     LixDatatype return_type;
 
 public:
-    FuncDecl(std::string p_sName, LixDatatype p_return_type, const std::vector<std::pair<LixDatatype, std::string>> p_vArgs, std::unique_ptr<BlockStmt> p_Body, unsigned int p_uiLine);
-    void visit(VisitorStmt *p_pVisitor);
-    BlockStmt *getBody();
-    std::string getName() const;
+    FuncDecl(std::string name, LixDatatype return_type, const std::vector<std::pair<LixDatatype, std::string>> args, std::unique_ptr<BlockStmt> body, TokenPosition position);
+    void visit(VisitorStmt *visitor);
+    BlockStmt *get_body();
+    std::string get_name() const;
     LixDatatype get_return_type() const;
     std::vector<std::pair<LixDatatype, std::string>>::iterator begin();
     std::vector<std::pair<LixDatatype, std::string>>::iterator end();

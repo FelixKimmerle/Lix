@@ -6,12 +6,12 @@
 class ExplicitCastExpr : public Expr
 {
 private:
-    ExprPtr m_pExpr;
-    LixDatatype m_to;
+    ExprPtr expr;
+    LixDatatype type;
 public:
-    ExplicitCastExpr(ExprPtr p_pExpr, LixDatatype p_Type,unsigned int p_uiLine);
-    void visit(VisitorExpr *p_pVisitor);
-    Expr * getExpr();
-    LixDatatype getTo();
+    ExplicitCastExpr(ExprPtr expr, LixDatatype type, TokenPosition position);
+    void visit(VisitorExpr *visitor);
+    Expr * get_expr();
+    LixDatatype get_type();
 };
 

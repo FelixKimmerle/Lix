@@ -1,4 +1,5 @@
 #pragma once
+
 #include "PrintStmt.hpp"
 #include "BlockStmt.hpp"
 #include "VarStmt.hpp"
@@ -8,20 +9,17 @@
 #include "ExprStmt.hpp"
 #include "FuncDecl.hpp"
 #include "ReturnStmt.hpp"
+
 class VisitorStmt
 {
-private:
-	/* data */
 public:
-	VisitorStmt(/* args */);
-	virtual ~VisitorStmt();
-	virtual void visitPrint(PrintStmt *p_pStmt) = 0;
-	virtual void visitBlock(BlockStmt *p_pStmt) = 0;
-	virtual void visitVar(VarStmt *p_pStmt) = 0;
-	virtual void visitIf(IfStmt *p_pStmt) = 0;
-	virtual void visitWhile(WhileStmt *p_pStmt) = 0;
-	virtual void visitFor(ForStmt *p_pStmt) = 0;
-	virtual void visitExprStmt(ExprStmt *p_pStmt) = 0;
-	virtual void visitFuncDecl(FuncDecl *p_pStmt) = 0;
-	virtual void visitReturnStmt(ReturnStmt *p_pStmt) = 0;
+	virtual void visitPrint(PrintStmt *print_stmt) = 0;
+	virtual void visitBlock(BlockStmt *block_stmt) = 0;
+	virtual void visitVar(VarStmt *var_stmt) = 0;
+	virtual void visitIf(IfStmt *if_stmt) = 0;
+	virtual void visitWhile(WhileStmt *while_stmt) = 0;
+	virtual void visitFor(ForStmt *for_stmt) = 0;
+	virtual void visitExprStmt(ExprStmt *expr_stmt) = 0;
+	virtual void visitFuncDecl(FuncDecl *func_decl_stmt) = 0;
+	virtual void visitReturnStmt(ReturnStmt *return_stmt) = 0;
 };

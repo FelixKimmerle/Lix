@@ -1,5 +1,9 @@
 #pragma once
+
+#include "TokenPosition.hpp"
+
 #include <string>
+
 class Token
 {
 public:
@@ -70,16 +74,15 @@ public:
   };
 
 private:
-  std::string m_sLexeme;
-  unsigned int m_uiLine;
-  TokenType m_TokenType;
+  std::string lexeme;
+  TokenPosition position;
+  TokenType token_type;
   friend std::ostream &operator<<(std::ostream &out, const Token &value);
 
 public:
-  Token(TokenType p_TokenType, unsigned int p_uiLine, std::string p_sLexeme = "");
+  Token(TokenType token_type, TokenPosition position, std::string lexeme = "");
   Token();
-  ~Token();
-  TokenType getType();
-  unsigned int getLine();
-  std::string getLexeme();
+  TokenType get_type();
+  TokenPosition get_position();
+  std::string get_lexeme();
 };

@@ -205,7 +205,6 @@ private:
 
 public:
 	Chunk(/* args */);
-	~Chunk();
 	void write(uint8_t p_bByte, unsigned int p_uiLine = 0);
 	void write(OpCode p_bByte, unsigned int p_uiLine = 0);
 	template <class T>

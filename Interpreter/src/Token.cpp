@@ -15,17 +15,17 @@ Token::Token() : token_type(TokenType::TOKEN_ERROR)
 {
 }
 
-Token::TokenType Token::get_type()
+Token::TokenType Token::get_type()const
 {
     return token_type;
 }
 
-TokenPosition Token::get_position()
+TokenPosition Token::get_position()const
 {
     return position;
 }
 
-std::string Token::get_lexeme()
+std::string Token::get_lexeme()const
 {
     return lexeme;
 }

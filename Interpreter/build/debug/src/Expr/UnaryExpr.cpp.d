@@ -1,6 +1,6 @@
 build/debug/src/Expr/UnaryExpr.cpp.o: src/Expr/UnaryExpr.cpp \
  src/Expr/UnaryExpr.hpp src/Expr/Expr.hpp src/LixTypenames.hpp \
- src/Expr/VisitorExpr.hpp src/Expr/BinaryExpr.hpp \
+ src/TokenPosition.hpp src/Expr/VisitorExpr.hpp src/Expr/BinaryExpr.hpp \
  src/Expr/GroupingExpr.hpp src/Expr/BooleanExpr.hpp \
  src/Expr/NumberExpr.hpp src/Expr/ExplicitCastExpr.hpp \
  src/Expr/VarExpr.hpp src/Expr/AssignExpr.hpp src/Expr/OrExpr.hpp \
@@ -11,6 +11,8 @@ src/Expr/UnaryExpr.hpp:
 src/Expr/Expr.hpp:
 
 src/LixTypenames.hpp:
+
+src/TokenPosition.hpp:
 
 src/Expr/VisitorExpr.hpp:
 

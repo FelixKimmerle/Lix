@@ -1,33 +1,28 @@
 #include "Variable.hpp"
 
-Variable::Variable(LixDatatype p_Type, std::string p_sName, unsigned int p_uiDepth, unsigned int p_uiLine)
-{
-    m_Type = p_Type;
-    m_sName = p_sName;
-    m_uiDepth = p_uiDepth;
-    m_uiLine = p_uiLine;
-}
-
-Variable::~Variable()
+Variable::Variable(LixDatatype type, std::string name, unsigned int depth, TokenPosition position) : type(type),
+                                                                                                     name(name),
+                                                                                                     depth(depth),
+                                                                                                     position(position)
 {
 }
 
-std::string Variable::getName()
+std::string Variable::get_name()
 {
-    return m_sName;
+    return name;
 }
 
-LixDatatype Variable::getType()
+LixDatatype Variable::get_type()
 {
-    return m_Type;
+    return type;
 }
 
-unsigned int Variable::getDepth()
+unsigned int Variable::get_depth()
 {
-    return m_uiDepth;
+    return depth;
 }
 
-unsigned int Variable::getLine()
+TokenPosition Variable::get_position()
 {
-    return m_uiLine;
+    return position;
 }

@@ -55,12 +55,12 @@ private:
 
     bool had_error;
     bool panic_mode;
-    void error(Token *token, const std::string &message);
+    void error(const Token &token, const std::string &message);
     void synchronize();
     Logger *logger;
 
 public:
-    Parser(std::string source,Logger *logger);
+    Parser(std::string source, Logger *logger);
     std::unique_ptr<BlockStmt> parse();
     bool hadError();
 };

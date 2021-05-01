@@ -82,7 +82,7 @@ private:
 public:
   Token(TokenType token_type, TokenPosition position, std::string lexeme = "");
   Token();
-  TokenType get_type();
-  TokenPosition get_position();
-  std::string get_lexeme();
+  TokenType get_type()const;
+  TokenPosition get_position()const;
+  std::string get_lexeme()const;
 };

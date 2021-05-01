@@ -1,5 +1,7 @@
 #include "Compiler.hpp"
+
 #include <iostream>
+#include <sstream>
 
 Compiler::Compiler(Logger *p_Logger, Lix_Func function, LixDatatype return_type) : had_error(false), logger(p_Logger), function(function), return_type(return_type)
 {
@@ -66,10 +68,12 @@ void Compiler::push_zero(LixDatatype m_Type)
     m_Stack.push_back(m_Type);
 }
 
-void Compiler::error(unsigned int line, const std::string &message)
+void Compiler::error(TokenPosition position, const std::string &message)
 {
     had_error = true;
-    logger->log("Error at line: " + std::to_string(line) + ". " + message, Logger::Error);
+    std::stringstream ss;
+    ss << position;
+    logger->log("Error at line: " + ss.str() + ". " + message, Logger::Error);
 }
 
 bool Compiler::hadError()
@@ -81,13 +85,13 @@ void Compiler::add_var(Variable variable)
 {
     for (auto var = m_Variables.rbegin(); var != m_Variables.rend(); ++var)
     {
-        if (var->getDepth() < m_uiCurrentDepth)
+        if (var->get_depth() < m_uiCurrentDepth)
         {
             break;
         }
-        if (variable.getName() == var->getName())
+        if (variable.get_name() == var->get_name())
         {
-            error(var->getLine(), "Variable with the name: \"" + variable.getName() + "\" already declared in this scope.");
+            error(var->get_position(), "Variable with the name: \"" + variable.get_name() + "\" already declared in this scope.");
         }
     }
     m_Variables.push_back(variable);
@@ -98,7 +102,7 @@ unsigned int Compiler::size_of_variables()
     unsigned int size = 0;
     for (auto var = m_Variables.rbegin(); var != m_Variables.rend(); ++var)
     {
-        size += getSize(var->getType());
+        size += getSize(var->get_type());
     }
     return size;
 }
@@ -111,9 +115,9 @@ std::pair<uint32_t, LixDatatype> Compiler::resolve_var(VarExpr *p_pExpr)
     for (auto var = m_Variables.rbegin(); var != m_Variables.rend(); ++var)
     {
         index--;
-        if (p_pExpr->getName() == var->getName())
+        if (p_pExpr->get_name() == var->get_name())
         {
-            type = var->getType();
+            type = var->get_type();
             find = true;
             break;
         }
@@ -123,13 +127,13 @@ std::pair<uint32_t, LixDatatype> Compiler::resolve_var(VarExpr *p_pExpr)
         int16_t offset = 0;
         for (size_t i = 0; i < index; i++)
         {
-            offset += getSize(m_Variables[i].getType());
+            offset += getSize(m_Variables[i].get_type());
         }
         return std::make_pair(offset, type);
     }
     else
     {
-        error(p_pExpr->getLine(), "No variable with name: \"" + p_pExpr->getName() + "\"");
+        error(p_pExpr->get_position(), "No variable with name: \"" + p_pExpr->get_name() + "\"");
     }
 }
 
@@ -160,7 +164,7 @@ void Compiler::visitBinary(BinaryExpr *p_pExpr)
 
     if (rightType != leftType)
     {
-        error(p_pExpr->getLine(), "Type of left operand (" + lixDatatypeToString(leftType) + ") does not match type of right operand (" + lixDatatypeToString(rightType) + ")");
+        error(p_pExpr->get_position(), "Type of left operand (" + lixDatatypeToString(leftType) + ") does not match type of right operand (" + lixDatatypeToString(rightType) + ")");
     }
 
     LixDatatype resultingType = rightType;
@@ -170,28 +174,28 @@ void Compiler::visitBinary(BinaryExpr *p_pExpr)
     case BinaryExpr::BO_ADD:
         if (resultingType == LixDatatype::LD_Bool)
         {
-            error(p_pExpr->getLine(), "Cannot add two boolean values");
+            error(p_pExpr->get_position(), "Cannot add two boolean values");
         }
         currentChunk()->write((uint8_t)Chunk::OpCode::OP_ADD_BYTE + (uint8_t)resultingType);
         break;
     case BinaryExpr::BO_MUL:
         if (resultingType == LixDatatype::LD_Bool)
         {
-            error(p_pExpr->getLine(), "Cannot multiply two boolean values");
+            error(p_pExpr->get_position(), "Cannot multiply two boolean values");
         }
         currentChunk()->write((uint8_t)Chunk::OpCode::OP_MULTIPLY_BYTE + (uint8_t)resultingType);
         break;
     case BinaryExpr::BO_SUB:
         if (resultingType == LixDatatype::LD_Bool)
         {
-            error(p_pExpr->getLine(), "Cannot subtract two boolean values");
+            error(p_pExpr->get_position(), "Cannot subtract two boolean values");
         }
         currentChunk()->write((uint8_t)Chunk::OpCode::OP_SUBTRACT_BYTE + (uint8_t)resultingType);
         break;
     case BinaryExpr::BO_DIV:
         if (resultingType == LixDatatype::LD_Bool)
         {
-            error(p_pExpr->getLine(), "Cannot divide two boolean values");
+            error(p_pExpr->get_position(), "Cannot divide two boolean values");
         }
         currentChunk()->write((uint8_t)Chunk::OpCode::OP_DIVIDE_BYTE + (uint8_t)resultingType);
         break;
@@ -203,11 +207,11 @@ void Compiler::visitUnary(UnaryExpr *p_pExpr)
     p_pExpr->get_expr()->visit(this);
     if (m_Stack.back() == LixDatatype::LD_Bool && p_pExpr->get_unary_operator() == UnaryExpr::UnaryOperator::UO_MINUS)
     {
-        error(p_pExpr->getLine(), "Dont use \'-\' to negate bool use \'!\' instead.");
+        error(p_pExpr->get_position(), "Dont use \'-\' to negate bool use \'!\' instead.");
     }
     if (m_Stack.back() < LixDatatype::LD_Bool && p_pExpr->get_unary_operator() == UnaryExpr::UnaryOperator::UO_MINUS)
     {
-        error(p_pExpr->getLine(), "Dont use \'!\' to negate numerical values use \'-\' instead.");
+        error(p_pExpr->get_position(), "Dont use \'!\' to negate numerical values use \'-\' instead.");
     }
     currentChunk()->write((uint8_t)Chunk::OpCode::OP_NEGATE_BYTE + (uint8_t)m_Stack.back());
 }
@@ -327,7 +331,7 @@ void Compiler::visitComparison(ComparisonExpr *p_pExpr)
 
     if (rightType != leftType)
     {
-        error(p_pExpr->getLine(), "Type of left operand (" + lixDatatypeToString(leftType) + ") does not match type of right operand (" + lixDatatypeToString(rightType) + ")");
+        error(p_pExpr->get_position(), "Type of left operand (" + lixDatatypeToString(leftType) + ") does not match type of right operand (" + lixDatatypeToString(rightType) + ")");
     }
 
     switch (p_pExpr->get_binary_operator())
@@ -383,15 +387,15 @@ void Compiler::visitFuncDecl(FuncDecl *p_pStmt)
     Compiler comp(logger, func, p_pStmt->get_return_type());
     for (auto &&arg : *p_pStmt)
     {
-        comp.add_var(Variable(arg.first, arg.second, 0, p_pStmt->getLine()));
+        comp.add_var(Variable(arg.first, arg.second, 0, p_pStmt->get_position()));
     }
 
-    comp.compile(p_pStmt->get_body());
+    comp.compile(*p_pStmt->get_body());
     func->getChunk()->disassemble(p_pStmt->get_name());
 
-    add_var(Variable(LixDatatype::LD_FUNC, p_pStmt->get_name(), m_uiCurrentDepth, p_pStmt->getLine()));
+    add_var(Variable(LixDatatype::LD_FUNC, p_pStmt->get_name(), m_uiCurrentDepth, p_pStmt->get_position()));
     m_Stack.push_back(LixDatatype::LD_FUNC);
-    currentChunk()->write(Chunk::OpCode::OP_PUSH_FUNC, p_pStmt->getLine());
+    currentChunk()->write(Chunk::OpCode::OP_PUSH_FUNC);
 
     uint8_t id = currentChunk()->addConstant(func);
     currentChunk()->write(id);
@@ -419,7 +423,7 @@ void Compiler::visitBlock(BlockStmt *p_pStmt)
 
     m_uiCurrentDepth--;
     unsigned int pops = 0;
-    while (m_Variables.size() != 0 && m_Variables.back().getDepth() > m_uiCurrentDepth)
+    while (m_Variables.size() != 0 && m_Variables.back().get_depth() > m_uiCurrentDepth)
     {
         m_Variables.pop_back();
         pops++;
@@ -429,7 +433,7 @@ void Compiler::visitBlock(BlockStmt *p_pStmt)
 }
 void Compiler::visitVar(VarStmt *p_pStmt)
 {
-    add_var(Variable(p_pStmt->get_type(), p_pStmt->get_name(), m_uiCurrentDepth, p_pStmt->getLine()));
+    add_var(Variable(p_pStmt->get_type(), p_pStmt->get_name(), m_uiCurrentDepth, p_pStmt->get_position()));
     if (p_pStmt->get_initializer() != nullptr)
     {
         p_pStmt->get_initializer()->visit(this);
@@ -518,7 +522,7 @@ void Compiler::visitCall(CallExpr *p_pExpr)
         expr->visit(this);
     }
     p_pExpr->get_callee()->visit(this);
-    currentChunk()->write(Chunk::OpCode::OP_CALL_FUNC, p_pExpr->getLine());
+    currentChunk()->write(Chunk::OpCode::OP_CALL_FUNC);
     currentChunk()->write(size_of_variables());
     for (auto &&expr : *p_pExpr)
     {

@@ -18,7 +18,7 @@ private:
     uint8_t stack_size(unsigned int n);
     void pop_one(bool moditernstack = false);
     void push_zero(LixDatatype m_Type);
-    void error(unsigned int line, const std::string &message);
+    void error(TokenPosition position, const std::string &message);
     bool had_error;
     Logger *logger;
 

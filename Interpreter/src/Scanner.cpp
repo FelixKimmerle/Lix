@@ -315,7 +315,7 @@ Token::TokenType Scanner::identifier_type()
 
 Token::TokenType Scanner::check_keyword(unsigned int start, unsigned int length, const std::string &rest, Token::TokenType type)
 {
-    if (start + length == current - start && rest == src.substr(start + start, current - start - start))
+    if (start + length == current - this->start && rest == src.substr(this->start + start, current - this->start - start))
     {
         return type;
     }

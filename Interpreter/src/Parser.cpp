@@ -23,8 +23,9 @@
 #include "Stmt/ReturnStmt.hpp"
 
 #include <iostream>
+#include <sstream>
 
-Parser::Parser(std::string source, Logger *logger) : scanner(source), had_error(false), logger(logger), panic_mode(false)
+Parser::Parser(std::string source, Logger *logger) : scanner("test.lix",source), had_error(false), logger(logger), panic_mode(false)
 {
 }
 
@@ -89,7 +90,7 @@ Token Parser::consume(Token::TokenType token_type, const std::string &message)
 	{
 		return advance();
 	}
-	error(&current, message);
+	error(current, message);
 	return current;
 }
 
@@ -355,7 +356,7 @@ std::unique_ptr<Expr> Parser::literal()
 	{
 		std::unique_ptr<Expr> expr = expression();
 		consume(Token::TokenType::TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
-		return std::make_unique<GroupingExpr>(std::move(expr), expr->getLine());
+		return std::make_unique<GroupingExpr>(std::move(expr), expr->get_position());
 	}
 	if (match(Token::TokenType::TOKEN_IDENTIFIER))
 	{
@@ -377,14 +378,13 @@ std::unique_ptr<Expr> Parser::literal()
 			return std::make_unique<VarExpr>(name.get_lexeme(), name.get_position());
 		}
 	}
-	error(&current, "Expect expression.");
+	error(current, "Expect expression.");
 	return nullptr;
 }
 
 std::unique_ptr<BlockStmt> Parser::block()
 {
-	unsigned int line = last.get_position();
-	std::unique_ptr<BlockStmt> block_stmt = std::make_unique<BlockStmt>(line);
+	std::unique_ptr<BlockStmt> block_stmt = std::make_unique<BlockStmt>(last.get_position());
 	while (!check(Token::TokenType::TOKEN_RIGHT_BRACE) && !is_at_end())
 	{
 		std::unique_ptr<Stmt> stmt = declaration();
@@ -465,10 +465,10 @@ std::unique_ptr<Stmt> Parser::fun_declaration(LixDatatype type, Token name)
 
 std::unique_ptr<Stmt> Parser::return_stmt()
 {
-	unsigned int line = last.get_position();
+	TokenPosition position = last.get_position();
 	std::unique_ptr<Expr> expr = expression();
 	consume(Token::TokenType::TOKEN_SEMICOLON, "Expect ';' after expression.");
-	return std::make_unique<ReturnStmt>(std::move(expr), line);
+	return std::make_unique<ReturnStmt>(std::move(expr), position);
 }
 
 std::unique_ptr<Stmt> Parser::statement()
@@ -504,15 +504,15 @@ std::unique_ptr<Stmt> Parser::statement()
 
 std::unique_ptr<Stmt> Parser::print_statement()
 {
-	unsigned int line = last.get_position();
+	TokenPosition position = last.get_position();
 	std::unique_ptr<Expr> value = expression();
 	consume(Token::TokenType::TOKEN_SEMICOLON, "Expect ';' after expression.");
-	return std::make_unique<PrintStmt>(std::move(value), line);
+	return std::make_unique<PrintStmt>(std::move(value), position);
 }
 
 std::unique_ptr<Stmt> Parser::if_statement()
 {
-	unsigned int line = last.get_position();
+	TokenPosition position = last.get_position();
 	consume(Token::TokenType::TOKEN_LEFT_PAREN, "Expect '(' after 'if'.");
 	std::unique_ptr<Expr> condition = expression();
 	consume(Token::TokenType::TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
@@ -522,23 +522,23 @@ std::unique_ptr<Stmt> Parser::if_statement()
 	{
 		elsestmt = statement();
 	}
-	return std::make_unique<IfStmt>(std::move(condition), std::move(then), std::move(elsestmt), line);
+	return std::make_unique<IfStmt>(std::move(condition), std::move(then), std::move(elsestmt), position);
 }
 
 std::unique_ptr<Stmt> Parser::while_statement()
 {
-	unsigned int line = last.get_position();
+	TokenPosition position = last.get_position();
 	consume(Token::TokenType::TOKEN_LEFT_PAREN, "Expect '(' after 'while'.");
 	std::unique_ptr<Expr> condition = expression();
 	consume(Token::TokenType::TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
 	std::unique_ptr<Stmt> body = statement();
 
-	return std::make_unique<WhileStmt>(std::move(condition), std::move(body), line);
+	return std::make_unique<WhileStmt>(std::move(condition), std::move(body), position);
 }
 
 std::unique_ptr<Stmt> Parser::for_statement()
 {
-	unsigned int line = last.get_position();
+	TokenPosition position = last.get_position();
 	consume(Token::TokenType::TOKEN_LEFT_PAREN, "Expect '(' after 'for'.");
 	std::unique_ptr<Stmt> initializer = nullptr;
 	if (match(Token::TokenType::TOKEN_SEMICOLON))
@@ -571,35 +571,40 @@ std::unique_ptr<Stmt> Parser::for_statement()
 
 	std::unique_ptr<Stmt> body = statement();
 
-	std::unique_ptr<BlockStmt> block_stmt = std::make_unique<BlockStmt>(line);
-	block_stmt->add(std::move(std::make_unique<ForStmt>(std::move(condition), std::move(body), std::move(initializer), std::move(increment), line)));
+	std::unique_ptr<BlockStmt> block_stmt = std::make_unique<BlockStmt>(position);
+	block_stmt->add(std::move(std::make_unique<ForStmt>(std::move(condition), std::move(body), std::move(initializer), std::move(increment), position)));
 	return block_stmt;
 }
 
 std::unique_ptr<Stmt> Parser::expression_statement()
 {
 	std::unique_ptr<Expr> expr = expression();
-	std::unique_ptr<ExprStmt> exprstmt = std::make_unique<ExprStmt>(std::move(expr), expr->getLine());
+	std::unique_ptr<ExprStmt> exprstmt = std::make_unique<ExprStmt>(std::move(expr), expr->get_position());
 	consume(Token::TokenType::TOKEN_SEMICOLON, "Expect ';' after expression.");
 	return exprstmt;
 }
 
-void Parser::error(Token *token, const std::string &message)
+void Parser::error(const Token &token, const std::string &message)
 {
 	had_error = true;
 	panic_mode = true;
-	logger->log("Error at line: " + std::to_string(token->get_position()) + ". " + message, Logger::Error);
+
+	std::stringstream ss;
+	ss << token.get_position();
+
+
+	logger->log("Error at line: " + ss.str() + ". " + message, Logger::Error);
 }
 
 void Parser::synchronize()
 {
-	while (current->get_type() != Token::TokenType::TOKEN_EOF)
+	while (current.get_type() != Token::TokenType::TOKEN_EOF)
 	{
 		if (last.get_type() == Token::TokenType::TOKEN_SEMICOLON)
 		{
 			return;
 		}
-		switch (current->get_type())
+		switch (current.get_type())
 		{
 		case Token::TokenType::TOKEN_CLASS:
 		case Token::TokenType::TOKEN_FUN:
@@ -619,24 +624,8 @@ void Parser::synchronize()
 
 std::unique_ptr<BlockStmt> Parser::parse()
 {
-	Token token;
-	do
-	{
-		token = scanner.scanToken();
-		std::cout << token << " - " << token.get_position() << std::endl;
-		if (token.get_type() == Token::TokenType::TOKEN_ERROR)
-		{
-			error(&token, token.get_lexeme());
-		}
-		else
-		{
-			tokens.push_back(token);
-		}
-
-	} while (token.get_type() != Token::TokenType::TOKEN_EOF);
-	current = tokens.begin();
-
-	std::unique_ptr<BlockStmt> statements = std::make_unique<BlockStmt>(0);
+	advance();
+	std::unique_ptr<BlockStmt> statements = std::make_unique<BlockStmt>(TokenPosition());
 	while (!is_at_end())
 	{
 		std::unique_ptr<Stmt> stmt = declaration();

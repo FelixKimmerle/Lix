@@ -1,8 +1,8 @@
 build/debug/src/main.cpp.o: src/main.cpp src/VM/Vm.hpp src/Chunk.hpp \
  src/LixTypenames.hpp src/VM/CallFrame.hpp src/VM/../ObjFunction.hpp \
  src/Converter.hpp src/Parser.hpp src/Scanner.hpp src/Token.hpp \
- src/Expr/Expr.hpp src/Stmt/Stmt.hpp src/Variable.hpp \
- src/Expr/VarExpr.hpp src/Logger.hpp src/Stmt/BlockStmt.hpp \
+ src/TokenPosition.hpp src/Expr/Expr.hpp src/Expr/VarExpr.hpp \
+ src/Stmt/Stmt.hpp src/Stmt/BlockStmt.hpp src/Variable.hpp src/Logger.hpp \
  src/Compiler.hpp src/Expr/VisitorExpr.hpp src/Expr/BinaryExpr.hpp \
  src/Expr/UnaryExpr.hpp src/Expr/GroupingExpr.hpp \
  src/Expr/BooleanExpr.hpp src/Expr/NumberExpr.hpp \
@@ -31,17 +31,19 @@ src/Scanner.hpp:
 
 src/Token.hpp:
 
+src/TokenPosition.hpp:
+
 src/Expr/Expr.hpp:
-
-src/Stmt/Stmt.hpp:
-
-src/Variable.hpp:
 
 src/Expr/VarExpr.hpp:
 
-src/Logger.hpp:
+src/Stmt/Stmt.hpp:
 
 src/Stmt/BlockStmt.hpp:
+
+src/Variable.hpp:
+
+src/Logger.hpp:
 
 src/Compiler.hpp:
 

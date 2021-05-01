@@ -467,10 +467,6 @@ Chunk::Chunk(/* args */)
 {
 }
 
-Chunk::~Chunk()
-{
-}
-
 void Chunk::write(uint8_t p_bByte, unsigned int p_uiLine)
 {
 	m_vCode.push_back(p_bByte);

@@ -16,7 +16,7 @@ int main()
     logger.set_log_level(100);
     logger.log("Logger init", Logger::Information);
 
-    std::ifstream t("test.txt");
+    std::ifstream t("Interpreter/test.txt");
     std::string str;
 
     t.seekg(0, std::ios::end);
@@ -33,7 +33,7 @@ int main()
     if (!parser.hadError())
     {
         Compiler compiler(&logger, LixDatatype::LD_Int);
-        Lix_Func function = compiler.compile(stmts.get());
+        Lix_Func function = compiler.compile(*stmts.get());
         std::cout << timer.elapsed() * 1000000 << std::endl;
 
         function->getChunk()->disassemble("Main");
